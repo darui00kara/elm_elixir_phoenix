@@ -6142,6 +6142,10 @@ var _elm_lang$core$Json_Decode$bool = _elm_lang$core$Native_Json.decodePrimitive
 var _elm_lang$core$Json_Decode$string = _elm_lang$core$Native_Json.decodePrimitive('string');
 var _elm_lang$core$Json_Decode$Decoder = {ctor: 'Decoder'};
 
+var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
+var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
+var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
+
 var _elm_lang$core$Tuple$mapSecond = F2(
 	function (func, _p0) {
 		var _p1 = _p0;
@@ -6168,6 +6172,192 @@ var _elm_lang$core$Tuple$first = function (_p6) {
 	var _p7 = _p6;
 	return _p7._0;
 };
+
+var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
+
+function on(node)
+{
+	return function(eventName, decoder, toTask)
+	{
+		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
+
+			function performTask(event)
+			{
+				var result = A2(_elm_lang$core$Json_Decode$decodeValue, decoder, event);
+				if (result.ctor === 'Ok')
+				{
+					_elm_lang$core$Native_Scheduler.rawSpawn(toTask(result._0));
+				}
+			}
+
+			node.addEventListener(eventName, performTask);
+
+			return function()
+			{
+				node.removeEventListener(eventName, performTask);
+			};
+		});
+	};
+}
+
+var rAF = typeof requestAnimationFrame !== 'undefined'
+	? requestAnimationFrame
+	: function(callback) { callback(); };
+
+function withNode(id, doStuff)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		rAF(function()
+		{
+			var node = document.getElementById(id);
+			if (node === null)
+			{
+				callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NotFound', _0: id }));
+				return;
+			}
+			callback(_elm_lang$core$Native_Scheduler.succeed(doStuff(node)));
+		});
+	});
+}
+
+
+// FOCUS
+
+function focus(id)
+{
+	return withNode(id, function(node) {
+		node.focus();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function blur(id)
+{
+	return withNode(id, function(node) {
+		node.blur();
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SCROLLING
+
+function getScrollTop(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollTop;
+	});
+}
+
+function setScrollTop(id, desiredScrollTop)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = desiredScrollTop;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toBottom(id)
+{
+	return withNode(id, function(node) {
+		node.scrollTop = node.scrollHeight;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function getScrollLeft(id)
+{
+	return withNode(id, function(node) {
+		return node.scrollLeft;
+	});
+}
+
+function setScrollLeft(id, desiredScrollLeft)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = desiredScrollLeft;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+function toRight(id)
+{
+	return withNode(id, function(node) {
+		node.scrollLeft = node.scrollWidth;
+		return _elm_lang$core$Native_Utils.Tuple0;
+	});
+}
+
+
+// SIZE
+
+function width(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollWidth;
+			case 'VisibleContent':
+				return node.clientWidth;
+			case 'VisibleContentWithBorders':
+				return node.offsetWidth;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.right - rect.left;
+		}
+	});
+}
+
+function height(options, id)
+{
+	return withNode(id, function(node) {
+		switch (options.ctor)
+		{
+			case 'Content':
+				return node.scrollHeight;
+			case 'VisibleContent':
+				return node.clientHeight;
+			case 'VisibleContentWithBorders':
+				return node.offsetHeight;
+			case 'VisibleContentWithBordersAndMargins':
+				var rect = node.getBoundingClientRect();
+				return rect.bottom - rect.top;
+		}
+	});
+}
+
+return {
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
+
+	focus: focus,
+	blur: blur,
+
+	getScrollTop: getScrollTop,
+	setScrollTop: F2(setScrollTop),
+	getScrollLeft: getScrollLeft,
+	setScrollLeft: F2(setScrollLeft),
+	toBottom: toBottom,
+	toRight: toRight,
+
+	height: F2(height),
+	width: F2(width)
+};
+
+}();
+
+var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
+var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
 var _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags;
@@ -9033,207 +9223,1331 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
-var _user$project$Endpoint$getUserUrl = 'http://localhost:4000/api/users/1';
-var _user$project$Endpoint$emailDecoder = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
-var _user$project$Endpoint$nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
-var _user$project$Endpoint$idDecoder = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
-var _user$project$Endpoint$subscriptions = function (user) {
-	return _elm_lang$core$Platform_Sub$none;
+var _elm_lang$navigation$Native_Navigation = function() {
+
+
+// FAKE NAVIGATION
+
+function go(n)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		if (n !== 0)
+		{
+			history.go(n);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function pushState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.pushState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+function replaceState(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		history.replaceState({}, '', url);
+		callback(_elm_lang$core$Native_Scheduler.succeed(getLocation()));
+	});
+}
+
+
+// REAL NAVIGATION
+
+function reloadPage(skipCache)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		document.location.reload(skipCache);
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+function setLocation(url)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		try
+		{
+			window.location = url;
+		}
+		catch(err)
+		{
+			// Only Firefox can throw a NS_ERROR_MALFORMED_URI exception here.
+			// Other browsers reload the page, so let's be consistent about that.
+			document.location.reload(false);
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+
+// GET LOCATION
+
+function getLocation()
+{
+	var location = document.location;
+
+	return {
+		href: location.href,
+		host: location.host,
+		hostname: location.hostname,
+		protocol: location.protocol,
+		origin: location.origin,
+		port_: location.port,
+		pathname: location.pathname,
+		search: location.search,
+		hash: location.hash,
+		username: location.username,
+		password: location.password
+	};
+}
+
+
+// DETECT IE11 PROBLEMS
+
+function isInternetExplorer11()
+{
+	return window.navigator.userAgent.indexOf('Trident') !== -1;
+}
+
+
+return {
+	go: go,
+	setLocation: setLocation,
+	reloadPage: reloadPage,
+	pushState: pushState,
+	replaceState: replaceState,
+	getLocation: getLocation,
+	isInternetExplorer11: isInternetExplorer11
 };
-var _user$project$Endpoint$update = F2(
-	function (msg, user) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'LoadUserData':
-				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: _p0._0._0, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return {ctor: '_Tuple2', _0: user, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'Signup':
-				return {ctor: '_Tuple2', _0: user, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'Name':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						user,
-						{name: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+
+}();
+
+var _elm_lang$navigation$Navigation$replaceState = _elm_lang$navigation$Native_Navigation.replaceState;
+var _elm_lang$navigation$Navigation$pushState = _elm_lang$navigation$Native_Navigation.pushState;
+var _elm_lang$navigation$Navigation$go = _elm_lang$navigation$Native_Navigation.go;
+var _elm_lang$navigation$Navigation$reloadPage = _elm_lang$navigation$Native_Navigation.reloadPage;
+var _elm_lang$navigation$Navigation$setLocation = _elm_lang$navigation$Native_Navigation.setLocation;
+var _elm_lang$navigation$Navigation_ops = _elm_lang$navigation$Navigation_ops || {};
+_elm_lang$navigation$Navigation_ops['&>'] = F2(
+	function (task1, task2) {
+		return A2(
+			_elm_lang$core$Task$andThen,
+			function (_p0) {
+				return task2;
+			},
+			task1);
+	});
+var _elm_lang$navigation$Navigation$notify = F3(
+	function (router, subs, location) {
+		var send = function (_p1) {
+			var _p2 = _p1;
+			return A2(
+				_elm_lang$core$Platform$sendToApp,
+				router,
+				_p2._0(location));
+		};
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(_elm_lang$core$List$map, send, subs)),
+			_elm_lang$core$Task$succeed(
+				{ctor: '_Tuple0'}));
+	});
+var _elm_lang$navigation$Navigation$cmdHelp = F3(
+	function (router, subs, cmd) {
+		var _p3 = cmd;
+		switch (_p3.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$go(_p3._0);
+			case 'New':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$pushState(_p3._0));
+			case 'Modify':
+				return A2(
+					_elm_lang$core$Task$andThen,
+					A2(_elm_lang$navigation$Navigation$notify, router, subs),
+					_elm_lang$navigation$Navigation$replaceState(_p3._0));
+			case 'Visit':
+				return _elm_lang$navigation$Navigation$setLocation(_p3._0);
 			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						user,
-						{email: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				return _elm_lang$navigation$Navigation$reloadPage(_p3._0);
 		}
 	});
-var _user$project$Endpoint$User = F3(
-	function (a, b, c) {
-		return {name: a, email: b, id: c};
+var _elm_lang$navigation$Navigation$killPopWatcher = function (popWatcher) {
+	var _p4 = popWatcher;
+	if (_p4.ctor === 'Normal') {
+		return _elm_lang$core$Process$kill(_p4._0);
+	} else {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Process$kill(_p4._0),
+			_elm_lang$core$Process$kill(_p4._1));
+	}
+};
+var _elm_lang$navigation$Navigation$onSelfMsg = F3(
+	function (router, location, state) {
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			A3(_elm_lang$navigation$Navigation$notify, router, state.subs, location),
+			_elm_lang$core$Task$succeed(state));
 	});
-var _user$project$Endpoint$userDecoder = A4(_elm_lang$core$Json_Decode$map3, _user$project$Endpoint$User, _user$project$Endpoint$nameDecoder, _user$project$Endpoint$emailDecoder, _user$project$Endpoint$idDecoder);
-var _user$project$Endpoint$userDataDecoder = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Endpoint$userDecoder);
-var _user$project$Endpoint$getUser = A2(_elm_lang$http$Http$get, _user$project$Endpoint$getUserUrl, _user$project$Endpoint$userDataDecoder);
-var _user$project$Endpoint$UserData = function (a) {
-	return {data: a};
+var _elm_lang$navigation$Navigation$subscription = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$command = _elm_lang$core$Native_Platform.leaf('Navigation');
+var _elm_lang$navigation$Navigation$Location = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return {href: a, host: b, hostname: c, protocol: d, origin: e, port_: f, pathname: g, search: h, hash: i, username: j, password: k};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
 };
-var _user$project$Endpoint$Signup = {ctor: 'Signup'};
-var _user$project$Endpoint$Email = function (a) {
-	return {ctor: 'Email', _0: a};
-};
-var _user$project$Endpoint$Name = function (a) {
-	return {ctor: 'Name', _0: a};
-};
-var _user$project$Endpoint$view = function (user) {
-	return A2(
-		_elm_lang$html$Html$div,
+var _elm_lang$navigation$Navigation$State = F2(
+	function (a, b) {
+		return {subs: a, popWatcher: b};
+	});
+var _elm_lang$navigation$Navigation$init = _elm_lang$core$Task$succeed(
+	A2(
+		_elm_lang$navigation$Navigation$State,
 		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$h2,
-				{ctor: '[]'},
+		_elm_lang$core$Maybe$Nothing));
+var _elm_lang$navigation$Navigation$Reload = function (a) {
+	return {ctor: 'Reload', _0: a};
+};
+var _elm_lang$navigation$Navigation$reload = _elm_lang$navigation$Navigation$command(
+	_elm_lang$navigation$Navigation$Reload(false));
+var _elm_lang$navigation$Navigation$reloadAndSkipCache = _elm_lang$navigation$Navigation$command(
+	_elm_lang$navigation$Navigation$Reload(true));
+var _elm_lang$navigation$Navigation$Visit = function (a) {
+	return {ctor: 'Visit', _0: a};
+};
+var _elm_lang$navigation$Navigation$load = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Visit(url));
+};
+var _elm_lang$navigation$Navigation$Modify = function (a) {
+	return {ctor: 'Modify', _0: a};
+};
+var _elm_lang$navigation$Navigation$modifyUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Modify(url));
+};
+var _elm_lang$navigation$Navigation$New = function (a) {
+	return {ctor: 'New', _0: a};
+};
+var _elm_lang$navigation$Navigation$newUrl = function (url) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$New(url));
+};
+var _elm_lang$navigation$Navigation$Jump = function (a) {
+	return {ctor: 'Jump', _0: a};
+};
+var _elm_lang$navigation$Navigation$back = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(0 - n));
+};
+var _elm_lang$navigation$Navigation$forward = function (n) {
+	return _elm_lang$navigation$Navigation$command(
+		_elm_lang$navigation$Navigation$Jump(n));
+};
+var _elm_lang$navigation$Navigation$cmdMap = F2(
+	function (_p5, myCmd) {
+		var _p6 = myCmd;
+		switch (_p6.ctor) {
+			case 'Jump':
+				return _elm_lang$navigation$Navigation$Jump(_p6._0);
+			case 'New':
+				return _elm_lang$navigation$Navigation$New(_p6._0);
+			case 'Modify':
+				return _elm_lang$navigation$Navigation$Modify(_p6._0);
+			case 'Visit':
+				return _elm_lang$navigation$Navigation$Visit(_p6._0);
+			default:
+				return _elm_lang$navigation$Navigation$Reload(_p6._0);
+		}
+	});
+var _elm_lang$navigation$Navigation$Monitor = function (a) {
+	return {ctor: 'Monitor', _0: a};
+};
+var _elm_lang$navigation$Navigation$program = F2(
+	function (locationToMessage, stuff) {
+		var init = stuff.init(
+			_elm_lang$navigation$Native_Navigation.getLocation(
+				{ctor: '_Tuple0'}));
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text(user.name),
-					_1: {ctor: '[]'}
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$program(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$programWithFlags = F2(
+	function (locationToMessage, stuff) {
+		var init = function (flags) {
+			return A2(
+				stuff.init,
+				flags,
+				_elm_lang$navigation$Native_Navigation.getLocation(
+					{ctor: '_Tuple0'}));
+		};
+		var subs = function (model) {
+			return _elm_lang$core$Platform_Sub$batch(
+				{
+					ctor: '::',
+					_0: _elm_lang$navigation$Navigation$subscription(
+						_elm_lang$navigation$Navigation$Monitor(locationToMessage)),
+					_1: {
+						ctor: '::',
+						_0: stuff.subscriptions(model),
+						_1: {ctor: '[]'}
+					}
+				});
+		};
+		return _elm_lang$html$Html$programWithFlags(
+			{init: init, view: stuff.view, update: stuff.update, subscriptions: subs});
+	});
+var _elm_lang$navigation$Navigation$subMap = F2(
+	function (func, _p7) {
+		var _p8 = _p7;
+		return _elm_lang$navigation$Navigation$Monitor(
+			function (_p9) {
+				return func(
+					_p8._0(_p9));
+			});
+	});
+var _elm_lang$navigation$Navigation$InternetExplorer = F2(
+	function (a, b) {
+		return {ctor: 'InternetExplorer', _0: a, _1: b};
+	});
+var _elm_lang$navigation$Navigation$Normal = function (a) {
+	return {ctor: 'Normal', _0: a};
+};
+var _elm_lang$navigation$Navigation$spawnPopWatcher = function (router) {
+	var reportLocation = function (_p10) {
+		return A2(
+			_elm_lang$core$Platform$sendToSelf,
+			router,
+			_elm_lang$navigation$Native_Navigation.getLocation(
+				{ctor: '_Tuple0'}));
+	};
+	return _elm_lang$navigation$Native_Navigation.isInternetExplorer11(
+		{ctor: '_Tuple0'}) ? A3(
+		_elm_lang$core$Task$map2,
+		_elm_lang$navigation$Navigation$InternetExplorer,
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'popstate', _elm_lang$core$Json_Decode$value, reportLocation)),
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'hashchange', _elm_lang$core$Json_Decode$value, reportLocation))) : A2(
+		_elm_lang$core$Task$map,
+		_elm_lang$navigation$Navigation$Normal,
+		_elm_lang$core$Process$spawn(
+			A3(_elm_lang$dom$Dom_LowLevel$onWindow, 'popstate', _elm_lang$core$Json_Decode$value, reportLocation)));
+};
+var _elm_lang$navigation$Navigation$onEffects = F4(
+	function (router, cmds, subs, _p11) {
+		var _p12 = _p11;
+		var _p15 = _p12.popWatcher;
+		var stepState = function () {
+			var _p13 = {ctor: '_Tuple2', _0: subs, _1: _p15};
+			_v6_2:
+			do {
+				if (_p13._0.ctor === '[]') {
+					if (_p13._1.ctor === 'Just') {
+						return A2(
+							_elm_lang$navigation$Navigation_ops['&>'],
+							_elm_lang$navigation$Navigation$killPopWatcher(_p13._1._0),
+							_elm_lang$core$Task$succeed(
+								A2(_elm_lang$navigation$Navigation$State, subs, _elm_lang$core$Maybe$Nothing)));
+					} else {
+						break _v6_2;
+					}
+				} else {
+					if (_p13._1.ctor === 'Nothing') {
+						return A2(
+							_elm_lang$core$Task$map,
+							function (_p14) {
+								return A2(
+									_elm_lang$navigation$Navigation$State,
+									subs,
+									_elm_lang$core$Maybe$Just(_p14));
+							},
+							_elm_lang$navigation$Navigation$spawnPopWatcher(router));
+					} else {
+						break _v6_2;
+					}
+				}
+			} while(false);
+			return _elm_lang$core$Task$succeed(
+				A2(_elm_lang$navigation$Navigation$State, subs, _p15));
+		}();
+		return A2(
+			_elm_lang$navigation$Navigation_ops['&>'],
+			_elm_lang$core$Task$sequence(
+				A2(
+					_elm_lang$core$List$map,
+					A2(_elm_lang$navigation$Navigation$cmdHelp, router, subs),
+					cmds)),
+			stepState);
+	});
+_elm_lang$core$Native_Platform.effectManagers['Navigation'] = {pkg: 'elm-lang/navigation', init: _elm_lang$navigation$Navigation$init, onEffects: _elm_lang$navigation$Navigation$onEffects, onSelfMsg: _elm_lang$navigation$Navigation$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$navigation$Navigation$cmdMap, subMap: _elm_lang$navigation$Navigation$subMap};
+
+var _evancz$url_parser$UrlParser$toKeyValuePair = function (segment) {
+	var _p0 = A2(_elm_lang$core$String$split, '=', segment);
+	if (((_p0.ctor === '::') && (_p0._1.ctor === '::')) && (_p0._1._1.ctor === '[]')) {
+		return A3(
+			_elm_lang$core$Maybe$map2,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
 				}),
+			_elm_lang$http$Http$decodeUri(_p0._0),
+			_elm_lang$http$Http$decodeUri(_p0._1._0));
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _evancz$url_parser$UrlParser$parseParams = function (queryString) {
+	return _elm_lang$core$Dict$fromList(
+		A2(
+			_elm_lang$core$List$filterMap,
+			_evancz$url_parser$UrlParser$toKeyValuePair,
+			A2(
+				_elm_lang$core$String$split,
+				'&',
+				A2(_elm_lang$core$String$dropLeft, 1, queryString))));
+};
+var _evancz$url_parser$UrlParser$splitUrl = function (url) {
+	var _p1 = A2(_elm_lang$core$String$split, '/', url);
+	if ((_p1.ctor === '::') && (_p1._0 === '')) {
+		return _p1._1;
+	} else {
+		return _p1;
+	}
+};
+var _evancz$url_parser$UrlParser$parseHelp = function (states) {
+	parseHelp:
+	while (true) {
+		var _p2 = states;
+		if (_p2.ctor === '[]') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			var _p4 = _p2._0;
+			var _p3 = _p4.unvisited;
+			if (_p3.ctor === '[]') {
+				return _elm_lang$core$Maybe$Just(_p4.value);
+			} else {
+				if ((_p3._0 === '') && (_p3._1.ctor === '[]')) {
+					return _elm_lang$core$Maybe$Just(_p4.value);
+				} else {
+					var _v4 = _p2._1;
+					states = _v4;
+					continue parseHelp;
+				}
+			}
+		}
+	}
+};
+var _evancz$url_parser$UrlParser$parse = F3(
+	function (_p5, url, params) {
+		var _p6 = _p5;
+		return _evancz$url_parser$UrlParser$parseHelp(
+			_p6._0(
+				{
+					visited: {ctor: '[]'},
+					unvisited: _evancz$url_parser$UrlParser$splitUrl(url),
+					params: params,
+					value: _elm_lang$core$Basics$identity
+				}));
+	});
+var _evancz$url_parser$UrlParser$parseHash = F2(
+	function (parser, location) {
+		return A3(
+			_evancz$url_parser$UrlParser$parse,
+			parser,
+			A2(_elm_lang$core$String$dropLeft, 1, location.hash),
+			_evancz$url_parser$UrlParser$parseParams(location.search));
+	});
+var _evancz$url_parser$UrlParser$parsePath = F2(
+	function (parser, location) {
+		return A3(
+			_evancz$url_parser$UrlParser$parse,
+			parser,
+			location.pathname,
+			_evancz$url_parser$UrlParser$parseParams(location.search));
+	});
+var _evancz$url_parser$UrlParser$intParamHelp = function (maybeValue) {
+	var _p7 = maybeValue;
+	if (_p7.ctor === 'Nothing') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _elm_lang$core$Result$toMaybe(
+			_elm_lang$core$String$toInt(_p7._0));
+	}
+};
+var _evancz$url_parser$UrlParser$mapHelp = F2(
+	function (func, _p8) {
+		var _p9 = _p8;
+		return {
+			visited: _p9.visited,
+			unvisited: _p9.unvisited,
+			params: _p9.params,
+			value: func(_p9.value)
+		};
+	});
+var _evancz$url_parser$UrlParser$State = F4(
+	function (a, b, c, d) {
+		return {visited: a, unvisited: b, params: c, value: d};
+	});
+var _evancz$url_parser$UrlParser$Parser = function (a) {
+	return {ctor: 'Parser', _0: a};
+};
+var _evancz$url_parser$UrlParser$s = function (str) {
+	return _evancz$url_parser$UrlParser$Parser(
+		function (_p10) {
+			var _p11 = _p10;
+			var _p12 = _p11.unvisited;
+			if (_p12.ctor === '[]') {
+				return {ctor: '[]'};
+			} else {
+				var _p13 = _p12._0;
+				return _elm_lang$core$Native_Utils.eq(_p13, str) ? {
+					ctor: '::',
+					_0: A4(
+						_evancz$url_parser$UrlParser$State,
+						{ctor: '::', _0: _p13, _1: _p11.visited},
+						_p12._1,
+						_p11.params,
+						_p11.value),
+					_1: {ctor: '[]'}
+				} : {ctor: '[]'};
+			}
+		});
+};
+var _evancz$url_parser$UrlParser$custom = F2(
+	function (tipe, stringToSomething) {
+		return _evancz$url_parser$UrlParser$Parser(
+			function (_p14) {
+				var _p15 = _p14;
+				var _p16 = _p15.unvisited;
+				if (_p16.ctor === '[]') {
+					return {ctor: '[]'};
+				} else {
+					var _p18 = _p16._0;
+					var _p17 = stringToSomething(_p18);
+					if (_p17.ctor === 'Ok') {
+						return {
+							ctor: '::',
+							_0: A4(
+								_evancz$url_parser$UrlParser$State,
+								{ctor: '::', _0: _p18, _1: _p15.visited},
+								_p16._1,
+								_p15.params,
+								_p15.value(_p17._0)),
+							_1: {ctor: '[]'}
+						};
+					} else {
+						return {ctor: '[]'};
+					}
+				}
+			});
+	});
+var _evancz$url_parser$UrlParser$string = A2(_evancz$url_parser$UrlParser$custom, 'STRING', _elm_lang$core$Result$Ok);
+var _evancz$url_parser$UrlParser$int = A2(_evancz$url_parser$UrlParser$custom, 'NUMBER', _elm_lang$core$String$toInt);
+var _evancz$url_parser$UrlParser_ops = _evancz$url_parser$UrlParser_ops || {};
+_evancz$url_parser$UrlParser_ops['</>'] = F2(
+	function (_p20, _p19) {
+		var _p21 = _p20;
+		var _p22 = _p19;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (state) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					_p22._0,
+					_p21._0(state));
+			});
+	});
+var _evancz$url_parser$UrlParser$map = F2(
+	function (subValue, _p23) {
+		var _p24 = _p23;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (_p25) {
+				var _p26 = _p25;
+				return A2(
+					_elm_lang$core$List$map,
+					_evancz$url_parser$UrlParser$mapHelp(_p26.value),
+					_p24._0(
+						{visited: _p26.visited, unvisited: _p26.unvisited, params: _p26.params, value: subValue}));
+			});
+	});
+var _evancz$url_parser$UrlParser$oneOf = function (parsers) {
+	return _evancz$url_parser$UrlParser$Parser(
+		function (state) {
+			return A2(
+				_elm_lang$core$List$concatMap,
+				function (_p27) {
+					var _p28 = _p27;
+					return _p28._0(state);
+				},
+				parsers);
+		});
+};
+var _evancz$url_parser$UrlParser$top = _evancz$url_parser$UrlParser$Parser(
+	function (state) {
+		return {
+			ctor: '::',
+			_0: state,
+			_1: {ctor: '[]'}
+		};
+	});
+var _evancz$url_parser$UrlParser_ops = _evancz$url_parser$UrlParser_ops || {};
+_evancz$url_parser$UrlParser_ops['<?>'] = F2(
+	function (_p30, _p29) {
+		var _p31 = _p30;
+		var _p32 = _p29;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (state) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					_p32._0,
+					_p31._0(state));
+			});
+	});
+var _evancz$url_parser$UrlParser$QueryParser = function (a) {
+	return {ctor: 'QueryParser', _0: a};
+};
+var _evancz$url_parser$UrlParser$customParam = F2(
+	function (key, func) {
+		return _evancz$url_parser$UrlParser$QueryParser(
+			function (_p33) {
+				var _p34 = _p33;
+				var _p35 = _p34.params;
+				return {
+					ctor: '::',
+					_0: A4(
+						_evancz$url_parser$UrlParser$State,
+						_p34.visited,
+						_p34.unvisited,
+						_p35,
+						_p34.value(
+							func(
+								A2(_elm_lang$core$Dict$get, key, _p35)))),
+					_1: {ctor: '[]'}
+				};
+			});
+	});
+var _evancz$url_parser$UrlParser$stringParam = function (name) {
+	return A2(_evancz$url_parser$UrlParser$customParam, name, _elm_lang$core$Basics$identity);
+};
+var _evancz$url_parser$UrlParser$intParam = function (name) {
+	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
+};
+
+var _user$project$Message$NewUrl = function (a) {
+	return {ctor: 'NewUrl', _0: a};
+};
+var _user$project$Message$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
+
+var _user$project$Model_User$Schema = F3(
+	function (a, b, c) {
+		return {id: a, name: b, email: c};
+	});
+var _user$project$Model_User$new = A3(_user$project$Model_User$Schema, 0, '', '');
+
+var _user$project$Model_Post$Schema = F3(
+	function (a, b, c) {
+		return {id: a, title: b, body: c};
+	});
+var _user$project$Model_Post$new = A3(_user$project$Model_Post$Schema, 0, '', '');
+
+var _user$project$Model$Model = F2(
+	function (a, b) {
+		return {user: a, post: b};
+	});
+var _user$project$Model$new = A2(_user$project$Model$Model, _user$project$Model_User$new, _user$project$Model_Post$new);
+
+var _user$project$Router_Route$EditUser = function (a) {
+	return {ctor: 'EditUser', _0: a};
+};
+var _user$project$Router_Route$ShowUser = function (a) {
+	return {ctor: 'ShowUser', _0: a};
+};
+var _user$project$Router_Route$SignUp = {ctor: 'SignUp'};
+var _user$project$Router_Route$EditPost = function (a) {
+	return {ctor: 'EditPost', _0: a};
+};
+var _user$project$Router_Route$ShowPost = function (a) {
+	return {ctor: 'ShowPost', _0: a};
+};
+var _user$project$Router_Route$NewPost = {ctor: 'NewPost'};
+var _user$project$Router_Route$SignIn = {ctor: 'SignIn'};
+var _user$project$Router_Route$Contact = {ctor: 'Contact'};
+var _user$project$Router_Route$Help = {ctor: 'Help'};
+var _user$project$Router_Route$About = {ctor: 'About'};
+var _user$project$Router_Route$TopPage = {ctor: 'TopPage'};
+var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Router_Route$TopPage, _evancz$url_parser$UrlParser$top),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_evancz$url_parser$UrlParser$map,
+				_user$project$Router_Route$About,
+				_evancz$url_parser$UrlParser$s('about')),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$h2,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text(user.email),
-						_1: {ctor: '[]'}
-					}),
+					_evancz$url_parser$UrlParser$map,
+					_user$project$Router_Route$Help,
+					_evancz$url_parser$UrlParser$s('help')),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
+						_evancz$url_parser$UrlParser$map,
+						_user$project$Router_Route$Contact,
+						_evancz$url_parser$UrlParser$s('contact')),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_evancz$url_parser$UrlParser$map,
+							_user$project$Router_Route$SignIn,
+							_evancz$url_parser$UrlParser$s('signin')),
+						_1: {
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$h2,
-								{ctor: '[]'},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text('Signup Form'),
-									_1: {ctor: '[]'}
-								}),
+								_evancz$url_parser$UrlParser$map,
+								_user$project$Router_Route$NewPost,
+								_evancz$url_parser$UrlParser$s('new-post')),
 							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$label,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$for('name-field'),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('Name:'),
-										_1: {ctor: '[]'}
-									}),
+									_evancz$url_parser$UrlParser$map,
+									_user$project$Router_Route$ShowPost,
+									A2(
+										_evancz$url_parser$UrlParser_ops['</>'],
+										_evancz$url_parser$UrlParser$s('post'),
+										A2(
+											_evancz$url_parser$UrlParser_ops['</>'],
+											_evancz$url_parser$UrlParser$int,
+											_evancz$url_parser$UrlParser$s('show')))),
 								_1: {
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$input,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$id('name-field'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$type_('text'),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$placeholder('Name'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onInput(_user$project$Endpoint$Name),
-														_1: {ctor: '[]'}
-													}
-												}
-											}
-										},
-										{ctor: '[]'}),
+										_evancz$url_parser$UrlParser$map,
+										_user$project$Router_Route$EditPost,
+										A2(
+											_evancz$url_parser$UrlParser_ops['</>'],
+											_evancz$url_parser$UrlParser$s('post'),
+											A2(
+												_evancz$url_parser$UrlParser_ops['</>'],
+												_evancz$url_parser$UrlParser$int,
+												_evancz$url_parser$UrlParser$s('edit')))),
 									_1: {
 										ctor: '::',
 										_0: A2(
-											_elm_lang$html$Html$label,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$for('email-field'),
-												_1: {ctor: '[]'}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Email:'),
-												_1: {ctor: '[]'}
-											}),
+											_evancz$url_parser$UrlParser$map,
+											_user$project$Router_Route$SignUp,
+											_evancz$url_parser$UrlParser$s('signup')),
 										_1: {
 											ctor: '::',
 											_0: A2(
-												_elm_lang$html$Html$input,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$id('email-field'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$type_('text'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Events$onInput(_user$project$Endpoint$Email),
-																_1: {ctor: '[]'}
-															}
-														}
-													}
-												},
-												{ctor: '[]'}),
+												_evancz$url_parser$UrlParser$map,
+												_user$project$Router_Route$ShowUser,
+												A2(
+													_evancz$url_parser$UrlParser_ops['</>'],
+													_evancz$url_parser$UrlParser$s('user'),
+													A2(
+														_evancz$url_parser$UrlParser_ops['</>'],
+														_evancz$url_parser$UrlParser$int,
+														_evancz$url_parser$UrlParser$s('show')))),
 											_1: {
 												ctor: '::',
 												_0: A2(
-													_elm_lang$html$Html$button,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onClick(_user$project$Endpoint$Signup),
-														_1: {ctor: '[]'}
-													},
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html$text('signup'),
-														_1: {ctor: '[]'}
-													}),
+													_evancz$url_parser$UrlParser$map,
+													_user$project$Router_Route$EditUser,
+													A2(
+														_evancz$url_parser$UrlParser_ops['</>'],
+														_evancz$url_parser$UrlParser$s('user'),
+														A2(
+															_evancz$url_parser$UrlParser_ops['</>'],
+															_evancz$url_parser$UrlParser$int,
+															_evancz$url_parser$UrlParser$s('edit')))),
 												_1: {ctor: '[]'}
 											}
 										}
 									}
 								}
 							}
+						}
+					}
+				}
+			}
+		}
+	});
+var _user$project$Router_Route$build = function (location) {
+	return A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Router_Route$route, location);
+};
+var _user$project$Router_Route$NotFound = {ctor: 'NotFound'};
+var _user$project$Router_Route$take = function (maybePagePath) {
+	return A2(_elm_lang$core$Maybe$withDefault, _user$project$Router_Route$NotFound, maybePagePath);
+};
+var _user$project$Router_Route$isSuccess = function (maybePagePath) {
+	var _p0 = _user$project$Router_Route$take(maybePagePath);
+	if (_p0.ctor === 'NotFound') {
+		return ' (Invalid)';
+	} else {
+		return ' (Success)';
+	}
+};
+var _user$project$Router_Route$toString = function (maybePagePath) {
+	var _p1 = _user$project$Router_Route$take(maybePagePath);
+	switch (_p1.ctor) {
+		case 'NotFound':
+			return 'not found';
+		case 'TopPage':
+			return 'top';
+		case 'About':
+			return 'about';
+		case 'Help':
+			return 'help';
+		case 'Contact':
+			return 'contact';
+		case 'SignIn':
+			return 'signin';
+		case 'NewPost':
+			return 'new post';
+		case 'ShowPost':
+			return 'show post';
+		case 'EditPost':
+			return 'edit post';
+		case 'SignUp':
+			return 'signup';
+		case 'ShowUser':
+			return 'show user';
+		default:
+			return 'edit user';
+	}
+};
+
+var _user$project$View_HelperView$currentPage = function (maybePagePath) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Current Page'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$li,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_user$project$Router_Route$toString(maybePagePath)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$li,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_user$project$Router_Route$isSuccess(maybePagePath)),
+							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
 				}
 			}
 		});
 };
-var _user$project$Endpoint$LoadUserData = function (a) {
-	return {ctor: 'LoadUserData', _0: a};
+var _user$project$View_HelperView$renderLocation = function (location) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				A2(_elm_lang$core$Basics_ops['++'], location.pathname, location.hash)),
+			_1: {ctor: '[]'}
+		});
 };
-var _user$project$Endpoint$sendRequest = A2(_elm_lang$http$Http$send, _user$project$Endpoint$LoadUserData, _user$project$Endpoint$getUser);
-var _user$project$Endpoint$init = {
-	ctor: '_Tuple2',
-	_0: {name: 'none', email: 'none', id: 0},
-	_1: _user$project$Endpoint$sendRequest
+var _user$project$View_HelperView$renderHistory = function (history) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Location History'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					A2(_elm_lang$core$List$map, _user$project$View_HelperView$renderLocation, history)),
+				_1: {ctor: '[]'}
+			}
+		});
 };
-var _user$project$Endpoint$main = _elm_lang$html$Html$program(
+var _user$project$View_HelperView$renderLink = function (url) {
+	return A2(
+		_elm_lang$html$Html$li,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(
+						_user$project$Message$NewUrl(url)),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(url),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View_HelperView$allLinks = function (id) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('page link'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$ul,
+					{ctor: '[]'},
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$View_HelperView$renderLink,
+						{
+							ctor: '::',
+							_0: '/',
+							_1: {
+								ctor: '::',
+								_0: '/about',
+								_1: {
+									ctor: '::',
+									_0: '/help',
+									_1: {
+										ctor: '::',
+										_0: '/contact',
+										_1: {
+											ctor: '::',
+											_0: '/signin',
+											_1: {
+												ctor: '::',
+												_0: '/new-post',
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$core$Basics_ops['++'],
+														'/post/',
+														A2(
+															_elm_lang$core$Basics_ops['++'],
+															_elm_lang$core$Basics$toString(id),
+															'/show')),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$core$Basics_ops['++'],
+															'/post/',
+															A2(
+																_elm_lang$core$Basics_ops['++'],
+																_elm_lang$core$Basics$toString(id),
+																'/edit')),
+														_1: {
+															ctor: '::',
+															_0: '/signup',
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$core$Basics_ops['++'],
+																	'/user/',
+																	A2(
+																		_elm_lang$core$Basics_ops['++'],
+																		_elm_lang$core$Basics$toString(id),
+																		'/show')),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$core$Basics_ops['++'],
+																		'/user/',
+																		A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			_elm_lang$core$Basics$toString(id),
+																			'/edit')),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						})),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$View_HelperView$render = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							model.user.name,
+							A2(_elm_lang$core$Basics_ops['++'], ':', model.user.email))),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.post.title,
+								A2(_elm_lang$core$Basics_ops['++'], ':', model.post.body))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$View_HelperView$notFound = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('404 not found'),
+			_1: {ctor: '[]'}
+		});
+};
+
+var _user$project$Controller_PageController$notFound = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$notFound};
+};
+var _user$project$Controller_PageController$signin = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
+};
+var _user$project$Controller_PageController$contact = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
+};
+var _user$project$Controller_PageController$help = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
+};
+var _user$project$Controller_PageController$about = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
+};
+var _user$project$Controller_PageController$home = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
+};
+
+var _user$project$View_PostView$edit = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('post edit'),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View_PostView$show = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('post show'),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View_PostView$new = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('post new'),
+			_1: {ctor: '[]'}
+		});
+};
+
+var _user$project$Controller_PostController$edit = F2(
+	function (id, model) {
+		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_PostView$edit};
+	});
+var _user$project$Controller_PostController$show = F2(
+	function (id, model) {
+		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_PostView$show};
+	});
+var _user$project$Controller_PostController$new = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_PostView$new};
+};
+
+var _user$project$View_UserView$edit = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('edit user'),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View_UserView$show = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('show user'),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$View_UserView$new = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('new user'),
+			_1: {ctor: '[]'}
+		});
+};
+
+var _user$project$Controller_UserController$edit = F2(
+	function (id, model) {
+		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$edit};
+	});
+var _user$project$Controller_UserController$show = F2(
+	function (id, model) {
+		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$show};
+	});
+var _user$project$Controller_UserController$new = function (model) {
+	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$new};
+};
+
+var _user$project$Resource$Param = F4(
+	function (a, b, c, d) {
+		return {currentPagePath: a, locationHistory: b, render: c, model: d};
+	});
+var _user$project$Resource$new = F2(
+	function (location, renderFunc) {
+		return A4(
+			_user$project$Resource$Param,
+			_user$project$Router_Route$build(location),
+			{
+				ctor: '::',
+				_0: location,
+				_1: {ctor: '[]'}
+			},
+			renderFunc,
+			_user$project$Model$new);
+	});
+
+var _user$project$Router$action = F2(
+	function (path, model) {
+		var _p0 = path;
+		switch (_p0.ctor) {
+			case 'NotFound':
+				return _user$project$Controller_PageController$notFound(model);
+			case 'TopPage':
+				return _user$project$Controller_PageController$home(model);
+			case 'About':
+				return _user$project$Controller_PageController$about(model);
+			case 'Help':
+				return _user$project$Controller_PageController$help(model);
+			case 'Contact':
+				return _user$project$Controller_PageController$contact(model);
+			case 'SignIn':
+				return _user$project$Controller_PageController$signin(model);
+			case 'NewPost':
+				return _user$project$Controller_PostController$new(model);
+			case 'ShowPost':
+				return A2(_user$project$Controller_PostController$show, _p0._0, model);
+			case 'EditPost':
+				return A2(_user$project$Controller_PostController$edit, _p0._0, model);
+			case 'SignUp':
+				return _user$project$Controller_UserController$new(model);
+			case 'ShowUser':
+				return A2(_user$project$Controller_UserController$show, _p0._0, model);
+			default:
+				return A2(_user$project$Controller_UserController$edit, _p0._0, model);
+		}
+	});
+var _user$project$Router$updateRender = F2(
+	function (render, param) {
+		return _elm_lang$core$Native_Utils.update(
+			param,
+			{render: render});
+	});
+var _user$project$Router$updateModel = F2(
+	function (model, param) {
+		return _elm_lang$core$Native_Utils.update(
+			param,
+			{model: model});
+	});
+var _user$project$Router$updatePath = F2(
+	function (location, param) {
+		return _elm_lang$core$Native_Utils.update(
+			param,
+			{
+				currentPagePath: _user$project$Router_Route$build(location),
+				locationHistory: {ctor: '::', _0: location, _1: param.locationHistory}
+			});
+	});
+var _user$project$Router$routing = F2(
+	function (location, param) {
+		var path = _user$project$Router_Route$take(
+			_user$project$Router_Route$build(location));
+		var _p1 = A2(_user$project$Router$action, path, param.model);
+		var model = _p1._0;
+		var cmd = _p1._1;
+		var render = _p1._2;
+		return {
+			ctor: '_Tuple2',
+			_0: A2(
+				_user$project$Router$updateRender,
+				render,
+				A2(
+					_user$project$Router$updateModel,
+					model,
+					A2(_user$project$Router$updatePath, location, param))),
+			_1: cmd
+		};
+	});
+
+var _user$project$Endpoint$subscriptions = function (param) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _user$project$Endpoint$view = function (param) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: param.render(param.model),
+			_1: {
+				ctor: '::',
+				_0: _user$project$View_HelperView$currentPage(param.currentPagePath),
+				_1: {
+					ctor: '::',
+					_0: _user$project$View_HelperView$allLinks(1),
+					_1: {
+						ctor: '::',
+						_0: _user$project$View_HelperView$renderHistory(param.locationHistory),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Endpoint$update = F2(
+	function (msg, param) {
+		var _p0 = msg;
+		if (_p0.ctor === 'NewUrl') {
+			return {
+				ctor: '_Tuple2',
+				_0: param,
+				_1: _elm_lang$navigation$Navigation$newUrl(_p0._0)
+			};
+		} else {
+			return A2(_user$project$Router$routing, _p0._0, param);
+		}
+	});
+var _user$project$Endpoint$init = function (location) {
+	return {
+		ctor: '_Tuple2',
+		_0: A2(_user$project$Resource$new, location, _user$project$View_HelperView$render),
+		_1: _elm_lang$core$Platform_Cmd$none
+	};
+};
+var _user$project$Endpoint$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_user$project$Message$UrlChange,
 	{init: _user$project$Endpoint$init, view: _user$project$Endpoint$view, update: _user$project$Endpoint$update, subscriptions: _user$project$Endpoint$subscriptions})();
 
 var Elm = {};

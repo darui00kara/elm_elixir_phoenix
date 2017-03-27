@@ -38,7 +38,7 @@ exports.config = {
   // Phoenix paths configuration
   paths: {
     // Dependencies and current project directories to watch
-    watched: ["static", "css", "js", "vendor", "../lib/elm/Endpoint.elm"],
+    watched: ["static", "css", "js", "vendor", "../lib/elm/src/Endpoint.elm"],
     // Where to compile files to
     public: "../priv/static"
   },
@@ -47,7 +47,7 @@ exports.config = {
   plugins: {
     elmBrunch: {
       elmFolder: "../lib/elm",
-      mainModules: ["Endpoint.elm"],
+      mainModules: ["src/Endpoint.elm"],
       outputFolder: "../../assets/vendor" // elm directory relative path
     },
     babel: {
