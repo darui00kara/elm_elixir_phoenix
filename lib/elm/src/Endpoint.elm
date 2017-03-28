@@ -12,6 +12,7 @@ import Message as Msg exposing (Msg)
 import Resource exposing (Param)
 import Router
 import View.HelperView as View
+import Temp exposing (..)
 
 -- main
 
@@ -28,7 +29,7 @@ main =
 
 init : Navigation.Location -> (Param, Cmd Msg)
 init location =
-  (Resource.new location View.render, Cmd.none)
+  (Resource.new location View.render, sendRequest)
 
 -- update 
 
@@ -38,7 +39,11 @@ update msg param =
     Msg.NewUrl url ->
       (param, Navigation.newUrl url)
     Msg.UrlChange location ->
-        Router.routing location param
+      Router.routing location param
+    Msg.RequestUserData (Ok data) ->
+      ( { param | model = { user = data, post = param.model.post } }, Cmd.none)
+    Msg.RequestUserData (Err _) ->
+      (param, Cmd.none)
 
 -- view
 
