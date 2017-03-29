@@ -6,9 +6,6 @@ import Json.Decode as Decode
 import Model.User as User exposing (..)
 import Message as Msg exposing (..)
 
-type alias JsonSchema =
-  { data : User.Schema }
-
 -- decoder
 
 idDecoder =
@@ -26,11 +23,21 @@ userDecoder =
 userDataDecoder =
   (Decode.field "data" userDecoder)
 
+usersDecoder =
+  Decode.list userDecoder
+
+usersDataDecoder =
+  (Decode.field "data" usersDecoder)
+
 -- request 
 
 getUserUrl : String
 getUserUrl =
   "http://localhost:4000/api/users/1"
+
+getUserUrl2 : String
+getUserUrl2 =
+  "http://localhost:4000/api/users"
 
 getUser : Http.Request User.Schema
 getUser =

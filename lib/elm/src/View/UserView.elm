@@ -11,7 +11,10 @@ new model =
 
 show : Model -> Html Msg
 show model =
-  div [] [ text "show user" ]
+  div []
+    [ div [] [ text "show user" ]
+    , div [] [ text (model.user.name ++ ":" ++ model.user.email) ]
+    ]
 
 edit : Model -> Html Msg
 edit model =

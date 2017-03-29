@@ -10386,8 +10386,30 @@ var _user$project$View_UserView$show = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html$text('show user'),
-			_1: {ctor: '[]'}
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('show user'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.user.name,
+								A2(_elm_lang$core$Basics_ops['++'], ':', model.user.email))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$View_UserView$new = function (model) {
@@ -10401,13 +10423,25 @@ var _user$project$View_UserView$new = function (model) {
 		});
 };
 
+var _user$project$Temp$getUserUrl2 = 'http://localhost:4000/api/users';
+var _user$project$Temp$getUserUrl = 'http://localhost:4000/api/users/1';
+var _user$project$Temp$emailDecoder = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
+var _user$project$Temp$nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
+var _user$project$Temp$idDecoder = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
+var _user$project$Temp$userDecoder = A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_User$Schema, _user$project$Temp$idDecoder, _user$project$Temp$nameDecoder, _user$project$Temp$emailDecoder);
+var _user$project$Temp$userDataDecoder = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Temp$userDecoder);
+var _user$project$Temp$getUser = A2(_elm_lang$http$Http$get, _user$project$Temp$getUserUrl, _user$project$Temp$userDataDecoder);
+var _user$project$Temp$sendRequest = A2(_elm_lang$http$Http$send, _user$project$Message$RequestUserData, _user$project$Temp$getUser);
+var _user$project$Temp$usersDecoder = _elm_lang$core$Json_Decode$list(_user$project$Temp$userDecoder);
+var _user$project$Temp$usersDataDecoder = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Temp$usersDecoder);
+
 var _user$project$Controller_UserController$edit = F2(
 	function (id, model) {
 		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$edit};
 	});
 var _user$project$Controller_UserController$show = F2(
 	function (id, model) {
-		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$show};
+		return {ctor: '_Tuple3', _0: model, _1: _user$project$Temp$sendRequest, _2: _user$project$View_UserView$show};
 	});
 var _user$project$Controller_UserController$new = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$new};
@@ -10503,18 +10537,6 @@ var _user$project$Router$routing = F2(
 		};
 	});
 
-var _user$project$Temp$getUserUrl = 'http://localhost:4000/api/users/1';
-var _user$project$Temp$emailDecoder = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
-var _user$project$Temp$nameDecoder = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
-var _user$project$Temp$idDecoder = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
-var _user$project$Temp$userDecoder = A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_User$Schema, _user$project$Temp$idDecoder, _user$project$Temp$nameDecoder, _user$project$Temp$emailDecoder);
-var _user$project$Temp$userDataDecoder = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Temp$userDecoder);
-var _user$project$Temp$getUser = A2(_elm_lang$http$Http$get, _user$project$Temp$getUserUrl, _user$project$Temp$userDataDecoder);
-var _user$project$Temp$sendRequest = A2(_elm_lang$http$Http$send, _user$project$Message$RequestUserData, _user$project$Temp$getUser);
-var _user$project$Temp$JsonSchema = function (a) {
-	return {data: a};
-};
-
 var _user$project$Endpoint$subscriptions = function (param) {
 	return _elm_lang$core$Platform_Sub$none;
 };
@@ -10572,7 +10594,7 @@ var _user$project$Endpoint$init = function (location) {
 	return {
 		ctor: '_Tuple2',
 		_0: A2(_user$project$Resource$new, location, _user$project$View_HelperView$render),
-		_1: _user$project$Temp$sendRequest
+		_1: _elm_lang$core$Platform_Cmd$none
 	};
 };
 var _user$project$Endpoint$main = A2(

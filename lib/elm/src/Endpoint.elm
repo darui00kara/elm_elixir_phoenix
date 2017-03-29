@@ -12,7 +12,6 @@ import Message as Msg exposing (Msg)
 import Resource exposing (Param)
 import Router
 import View.HelperView as View
-import Temp exposing (..)
 
 -- main
 
@@ -29,7 +28,7 @@ main =
 
 init : Navigation.Location -> (Param, Cmd Msg)
 init location =
-  (Resource.new location View.render, sendRequest)
+  (Resource.new location View.render, Cmd.none)
 
 -- update 
 
