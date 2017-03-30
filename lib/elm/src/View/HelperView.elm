@@ -8,6 +8,7 @@ import Navigation
 
 import Message as Msg exposing (Msg)
 import Model exposing (Model)
+import Model.Post as Post exposing (..)
 import Router.Route as Route
 
 notFound : Model -> Html Msg
@@ -20,6 +21,17 @@ render model =
     [ div [] [ text (model.user.name ++ ":" ++ model.user.email) ]
     , div [] [ text (model.post.title ++ ":" ++ model.post.body) ]
     ]
+
+renderPosts : Model -> Html Msg
+renderPosts model =
+  div []
+    [ h1 [] [ text "posts" ]
+    , ul [] (List.map renderPost model.listPosts)
+    ]
+
+renderPost : Post.Schema -> Html Msg
+renderPost post =
+  li [] [ text (post.title ++ ":" ++ post.body) ]
 
 allLinks : Int -> Html Msg
 allLinks id =

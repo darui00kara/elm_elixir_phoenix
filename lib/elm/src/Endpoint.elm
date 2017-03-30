@@ -40,8 +40,12 @@ update msg param =
     Msg.UrlChange location ->
       Router.routing location param
     Msg.RequestUserData (Ok data) ->
-      ( { param | model = { user = data, post = param.model.post } }, Cmd.none)
+      ( { param | model = { user = data, post = param.model.post, listPosts = [] } }, Cmd.none )
     Msg.RequestUserData (Err _) ->
+      (param, Cmd.none)
+    Msg.GetPostsReq (Ok data) ->
+      ( { param | model = { user = param.model.user, post = param.model.post, listPosts = data } }, Cmd.none )
+    Msg.GetPostsReq (Err _) ->
       (param, Cmd.none)
 
 -- view

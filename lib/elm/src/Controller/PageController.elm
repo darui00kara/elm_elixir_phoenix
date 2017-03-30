@@ -5,10 +5,11 @@ import Html exposing (Html)
 import Message exposing (Msg)
 import Model exposing (Model)
 import View.HelperView as View
+import Temp exposing (..)
 
 home : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 home model =
-  (model, Cmd.none, View.render)
+  (model, getPostsReq, View.renderPosts)
 
 about : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 about model =
