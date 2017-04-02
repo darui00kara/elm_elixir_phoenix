@@ -46,8 +46,29 @@ update msg param =
     Msg.ListPostsReq (Ok data) ->
       ( { param | model = { user = param.model.user, post = param.model.post, listPosts = data } }, Cmd.none )
     Msg.ListPostsReq (Err _) ->
-      ( { param | model = { user = param.model.user, post = {id = 99, title = "error", body = "error"}, listPosts = param.model.listPosts } }, Cmd.none )
---      (param, Cmd.none)
+      (param, Cmd.none)
+    Msg.SendRequest reqMsg ->
+      reqResult reqMsg param
+
+reqResult : Msg.RequestMsg a -> Param -> (Param, Cmd Msg)
+reqResult msg param =
+  case msg of
+    Msg.UserData (Ok data) ->
+      (param, Cmd.none)
+    Msg.UserData (Err _) ->
+      (param, Cmd.none)
+    Msg.ListUsersData (Ok data) ->
+      (param, Cmd.none)
+    Msg.ListUsersData (Err _) ->
+      (param, Cmd.none)
+    Msg.PostData (Ok data) ->
+      (param, Cmd.none)
+    Msg.PostData (Err _) ->
+      (param, Cmd.none)
+    Msg.ListPostsData (Ok data) ->
+      (param, Cmd.none)
+    Msg.ListPostsData (Err _) ->
+      (param, Cmd.none)
 
 -- view
 

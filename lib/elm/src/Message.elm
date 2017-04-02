@@ -11,3 +11,18 @@ type Msg =
   | NewUrl String
   | UserReq (Result Http.Error User.Schema)
   | ListPostsReq (Result Http.Error (List Post.Schema))
+  | SendRequest (RequestMsg ReqDataType)
+
+type RequestMsg a =
+  UserData (Result Http.Error a)
+  | ListUsersData (Result Http.Error (List a))
+  | PostData (Result Http.Error a)
+  | ListPostsData (Result Http.Error (List a))
+
+type ReqDataType =
+  DataType
+  | List DataType
+
+type DataType =
+  User.Schema
+  | Post.Schema

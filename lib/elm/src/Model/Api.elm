@@ -18,3 +18,7 @@ userReq param =
 listPostsReq : Http.Request (List Post.Schema) -> Cmd Msg
 listPostsReq param =
   Http.send Msg.ListPostsReq param
+
+sendReq : Http.Request a -> Cmd (RequestMsg a)
+sendReq =
+  Http.send Msg.UserData
