@@ -39,14 +39,15 @@ update msg param =
       (param, Navigation.newUrl url)
     Msg.UrlChange location ->
       Router.routing location param
-    Msg.RequestUserData (Ok data) ->
+    Msg.UserReq (Ok data) ->
       ( { param | model = { user = data, post = param.model.post, listPosts = [] } }, Cmd.none )
-    Msg.RequestUserData (Err _) ->
+    Msg.UserReq (Err _) ->
       (param, Cmd.none)
-    Msg.GetPostsReq (Ok data) ->
+    Msg.ListPostsReq (Ok data) ->
       ( { param | model = { user = param.model.user, post = param.model.post, listPosts = data } }, Cmd.none )
-    Msg.GetPostsReq (Err _) ->
-      (param, Cmd.none)
+    Msg.ListPostsReq (Err _) ->
+      ( { param | model = { user = param.model.user, post = {id = 99, title = "error", body = "error"}, listPosts = param.model.listPosts } }, Cmd.none )
+--      (param, Cmd.none)
 
 -- view
 

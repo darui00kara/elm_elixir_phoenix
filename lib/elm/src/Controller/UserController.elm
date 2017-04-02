@@ -5,7 +5,8 @@ import Html exposing (Html)
 import Message exposing (Msg)
 import Model exposing (Model)
 import View.UserView as View
-import Temp exposing (sendRequest)
+import Model.User as User
+import Model.Api as Api
 
 new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
@@ -13,7 +14,10 @@ new model =
 
 show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 show id model =
-  (model, sendRequest, View.show)
+  ( model
+  , (Api.getReqParam (User.showApi "1") User.userDecode) |> Api.userReq
+  , View.show
+  )
 
 edit : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 edit id model =
