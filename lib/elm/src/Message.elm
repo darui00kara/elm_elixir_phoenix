@@ -15,9 +15,12 @@ type Msg =
 
 type RequestMsg a =
   UserData (Result Http.Error a)
-  | ListUsersData (Result Http.Error (List a))
-  | PostData (Result Http.Error a)
-  | ListPostsData (Result Http.Error (List a))
+  | ListPostsData (Result Http.Error a)
+
+{--
+type alias ReqResult a =
+  Result Http.Error a
+--}
 
 type ReqDataType =
   DataType

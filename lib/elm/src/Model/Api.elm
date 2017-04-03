@@ -22,3 +22,7 @@ listPostsReq param =
 sendReq : Http.Request a -> Cmd (RequestMsg a)
 sendReq =
   Http.send Msg.UserData
+
+wrapper : Cmd (RequestMsg Msg.ReqDataType) -> Cmd Msg
+wrapper req =
+  Cmd.map Msg.SendRequest req

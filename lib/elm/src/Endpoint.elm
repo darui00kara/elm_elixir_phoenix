@@ -57,14 +57,6 @@ reqResult msg param =
       (param, Cmd.none)
     Msg.UserData (Err _) ->
       (param, Cmd.none)
-    Msg.ListUsersData (Ok data) ->
-      (param, Cmd.none)
-    Msg.ListUsersData (Err _) ->
-      (param, Cmd.none)
-    Msg.PostData (Ok data) ->
-      (param, Cmd.none)
-    Msg.PostData (Err _) ->
-      (param, Cmd.none)
     Msg.ListPostsData (Ok data) ->
       (param, Cmd.none)
     Msg.ListPostsData (Err _) ->

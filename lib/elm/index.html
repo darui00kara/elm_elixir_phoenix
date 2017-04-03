@@ -9882,12 +9882,6 @@ var _user$project$Message$UrlChange = function (a) {
 var _user$project$Message$ListPostsData = function (a) {
 	return {ctor: 'ListPostsData', _0: a};
 };
-var _user$project$Message$PostData = function (a) {
-	return {ctor: 'PostData', _0: a};
-};
-var _user$project$Message$ListUsersData = function (a) {
-	return {ctor: 'ListUsersData', _0: a};
-};
 var _user$project$Message$UserData = function (a) {
 	return {ctor: 'UserData', _0: a};
 };
@@ -10346,6 +10340,9 @@ var _user$project$View_HelperView$notFound = function (model) {
 			_1: {ctor: '[]'}
 		});
 };
+var _user$project$Model_Api$wrapper = function (req) {
+	return A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$SendRequest, req);
+};
 var _user$project$Model_Api$sendReq = _elm_lang$http$Http$send(_user$project$Message$UserData);
 var _user$project$Model_Api$listPostsReq = function (param) {
 	return A2(_elm_lang$http$Http$send, _user$project$Message$ListPostsReq, param);
@@ -10610,31 +10607,18 @@ var _user$project$Endpoint$view = function (param) {
 var _user$project$Endpoint$reqResult = F2(
 	function (msg, param) {
 		var _p0 = msg;
-		switch (_p0.ctor) {
-			case 'UserData':
-				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'ListUsersData':
-				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'PostData':
-				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			default:
-				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
-				}
+		if (_p0.ctor === 'UserData') {
+			if (_p0._0.ctor === 'Ok') {
+				return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
+			} else {
+				return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
+			}
+		} else {
+			if (_p0._0.ctor === 'Ok') {
+				return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
+			} else {
+				return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
+			}
 		}
 	});
 var _user$project$Endpoint$update = F2(
