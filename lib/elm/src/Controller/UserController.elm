@@ -5,8 +5,6 @@ import Html exposing (Html)
 import Message exposing (Msg)
 import Model exposing (Model)
 import View.UserView as View
-import Model.User as User
-import Model.Api as Api
 
 new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
@@ -15,7 +13,7 @@ new model =
 show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 show id model =
   ( model
-  , (Api.getReqParam (User.showApi "1") User.userDecode) |> Api.userReq
+  , Cmd.none
   , View.show
   )
 

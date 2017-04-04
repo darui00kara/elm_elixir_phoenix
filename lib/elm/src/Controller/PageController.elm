@@ -5,13 +5,11 @@ import Html exposing (Html)
 import Message exposing (Msg)
 import Model exposing (Model)
 import View.HelperView as View
-import Model.Post as Post
-import Model.Api as Api
 
 home : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 home model =
   ( model
-  , (Api.getReqParam Post.indexApi Post.listPostsDecode) |> Api.listPostsReq
+  , Cmd.none
   , View.renderPosts
   )
 
