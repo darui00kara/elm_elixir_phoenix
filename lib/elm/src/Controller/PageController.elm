@@ -2,14 +2,15 @@ module Controller.PageController exposing (notFound, home, about, help, contact,
 
 import Html exposing (Html)
 
-import Message exposing (Msg)
+import Message as Msg exposing (Msg)
 import Model exposing (Model)
 import View.HelperView as View
+import Request.PostData as Post
 
 home : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 home model =
   ( model
-  , Cmd.none
+  , Cmd.map Msg.PostReq Post.index
   , View.renderPosts
   )
 

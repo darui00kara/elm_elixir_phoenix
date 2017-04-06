@@ -9835,41 +9835,129 @@ var _evancz$url_parser$UrlParser$stringParam = function (name) {
 var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
+var _user$project$Request_Helper$cmdMap = F2(
+	function (translation, cmd) {
+		return A2(_elm_lang$core$Platform_Cmd$map, translation, cmd);
+	});
+var _user$project$Request_Helper$Success = function (a) {
+	return {ctor: 'Success', _0: a};
+};
+var _user$project$Request_Helper$Failure = function (a) {
+	return {ctor: 'Failure', _0: a};
+};
+var _user$project$Request_Helper$resultToMessage = function (result) {
+	var _p0 = result;
+	if (_p0.ctor === 'Ok') {
+		return _user$project$Request_Helper$Success(_p0._0);
+	} else {
+		return _user$project$Request_Helper$Failure(_p0._0);
+	}
+};
+var _user$project$Request_Helper$sendReq = _elm_lang$http$Http$send(_user$project$Request_Helper$resultToMessage);
+var _user$project$Request_Helper$get = F3(
+	function (apiUrl, translation, decoder) {
+		return A2(
+			_user$project$Request_Helper$cmdMap,
+			translation,
+			_user$project$Request_Helper$sendReq(
+				A2(_elm_lang$http$Http$get, apiUrl, decoder)));
+	});
+var _user$project$Model_Post$Schema = F3(
+	function (a, b, c) {
+		return {id: a, title: b, body: c};
+	});
+var _user$project$Model_Post$new = A3(_user$project$Model_Post$Schema, 0, '', '');
+var _user$project$Model_PostDecoder$body = A2(_elm_lang$core$Json_Decode$field, 'body', _elm_lang$core$Json_Decode$string);
+var _user$project$Model_PostDecoder$title = A2(_elm_lang$core$Json_Decode$field, 'title', _elm_lang$core$Json_Decode$string);
+var _user$project$Model_PostDecoder$id = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
+var _user$project$Model_PostDecoder$post = A2(
+	_elm_lang$core$Json_Decode$field,
+	'data',
+	A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_Post$Schema, _user$project$Model_PostDecoder$id, _user$project$Model_PostDecoder$title, _user$project$Model_PostDecoder$body));
+var _user$project$Model_PostDecoder$listPosts = A2(
+	_elm_lang$core$Json_Decode$field,
+	'data',
+	_elm_lang$core$Json_Decode$list(_user$project$Model_PostDecoder$post));
+var _user$project$Request_PostData$Index = function (a) {
+	return {ctor: 'Index', _0: a};
+};
+var _user$project$Request_PostData$index = A3(_user$project$Request_Helper$get, 'http://localhost:4000/api/posts', _user$project$Request_PostData$Index, _user$project$Model_PostDecoder$listPosts);
+var _user$project$Request_PostData$Show = function (a) {
+	return {ctor: 'Show', _0: a};
+};
+var _user$project$Request_PostData$show = function (id) {
+	return A3(
+		_user$project$Request_Helper$get,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://localhost:4000/api/posts/',
+			_elm_lang$core$Basics$toString(id)),
+		_user$project$Request_PostData$Show,
+		_user$project$Model_PostDecoder$post);
+};
+var _user$project$Model_User$Schema = F3(
+	function (a, b, c) {
+		return {id: a, name: b, email: c};
+	});
+var _user$project$Model_User$new = A3(_user$project$Model_User$Schema, 0, '', '');
+var _user$project$Model_UserDecoder$email = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
+var _user$project$Model_UserDecoder$name = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
+var _user$project$Model_UserDecoder$id = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
+var _user$project$Model_UserDecoder$user = A2(
+	_elm_lang$core$Json_Decode$field,
+	'data',
+	A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_User$Schema, _user$project$Model_UserDecoder$id, _user$project$Model_UserDecoder$name, _user$project$Model_UserDecoder$email));
+var _user$project$Model_UserDecoder$listUsers = A2(
+	_elm_lang$core$Json_Decode$field,
+	'data',
+	_elm_lang$core$Json_Decode$list(_user$project$Model_UserDecoder$user));
+var _user$project$Request_UserData$Index = function (a) {
+	return {ctor: 'Index', _0: a};
+};
+var _user$project$Request_UserData$index = A3(_user$project$Request_Helper$get, 'http://localhost:4000/api/users', _user$project$Request_UserData$Index, _user$project$Model_UserDecoder$listUsers);
+var _user$project$Request_UserData$Show = function (a) {
+	return {ctor: 'Show', _0: a};
+};
+var _user$project$Request_UserData$show = function (id) {
+	return A3(
+		_user$project$Request_Helper$get,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://localhost:4000/api/users/',
+			_elm_lang$core$Basics$toString(id)),
+		_user$project$Request_UserData$Show,
+		_user$project$Model_UserDecoder$user);
+};
+var _user$project$Message$UserReq = function (a) {
+	return {ctor: 'UserReq', _0: a};
+};
+var _user$project$Message$PostReq = function (a) {
+	return {ctor: 'PostReq', _0: a};
+};
 var _user$project$Message$NewUrl = function (a) {
 	return {ctor: 'NewUrl', _0: a};
 };
 var _user$project$Message$UrlChange = function (a) {
 	return {ctor: 'UrlChange', _0: a};
 };
-var _user$project$Model_User$indexApi = 'http://localhost:4000/api/users';
-var _user$project$Model_User$showApi = function (id) {
-	return A2(_elm_lang$core$Basics_ops['++'], 'http://localhost:4000/api/users/', id);
-};
-var _user$project$Model_User$email = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
-var _user$project$Model_User$name = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
-var _user$project$Model_User$id = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
-var _user$project$Model_User$Schema = F3(
-	function (a, b, c) {
-		return {id: a, name: b, email: c};
+var _user$project$Model$updateListPosts = F2(
+	function (listPosts, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{listPosts: listPosts});
 	});
-var _user$project$Model_User$new = A3(_user$project$Model_User$Schema, 0, '', '');
-var _user$project$Model_User$user = A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_User$Schema, _user$project$Model_User$id, _user$project$Model_User$name, _user$project$Model_User$email);
-var _user$project$Model_User$listUsers = _elm_lang$core$Json_Decode$list(_user$project$Model_User$user);
-var _user$project$Model_User$listUsersDecode = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Model_User$listUsers);
-var _user$project$Model_User$userDecode = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Model_User$user);
-var _user$project$Model_Post$indexApi = 'http://localhost:4000/api/posts';
-var _user$project$Model_Post$body = A2(_elm_lang$core$Json_Decode$field, 'body', _elm_lang$core$Json_Decode$string);
-var _user$project$Model_Post$title = A2(_elm_lang$core$Json_Decode$field, 'title', _elm_lang$core$Json_Decode$string);
-var _user$project$Model_Post$id = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
-var _user$project$Model_Post$Schema = F3(
-	function (a, b, c) {
-		return {id: a, title: b, body: c};
+var _user$project$Model$updatePost = F2(
+	function (post, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{post: post});
 	});
-var _user$project$Model_Post$new = A3(_user$project$Model_Post$Schema, 0, '', '');
-var _user$project$Model_Post$post = A4(_elm_lang$core$Json_Decode$map3, _user$project$Model_Post$Schema, _user$project$Model_Post$id, _user$project$Model_Post$title, _user$project$Model_Post$body);
-var _user$project$Model_Post$listPosts = _elm_lang$core$Json_Decode$list(_user$project$Model_Post$post);
-var _user$project$Model_Post$listPostsDecode = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Model_Post$listPosts);
-var _user$project$Model_Post$postDecode = A2(_elm_lang$core$Json_Decode$field, 'data', _user$project$Model_Post$post);
+var _user$project$Model$updateUser = F2(
+	function (user, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{user: user});
+	});
 var _user$project$Model$Model = F3(
 	function (a, b, c) {
 		return {user: a, post: b, listPosts: c};
@@ -10335,7 +10423,12 @@ var _user$project$Controller_PageController$about = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
 };
 var _user$project$Controller_PageController$home = function (model) {
-	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$renderPosts};
+	return {
+		ctor: '_Tuple3',
+		_0: model,
+		_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$PostReq, _user$project$Request_PostData$index),
+		_2: _user$project$View_HelperView$renderPosts
+	};
 };
 var _user$project$View_PostView$edit = function (model) {
 	return A2(
@@ -10436,11 +10529,25 @@ var _user$project$Controller_UserController$edit = F2(
 	});
 var _user$project$Controller_UserController$show = F2(
 	function (id, model) {
-		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$show};
+		return {
+			ctor: '_Tuple3',
+			_0: model,
+			_1: A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Message$UserReq,
+				_user$project$Request_UserData$show(id)),
+			_2: _user$project$View_UserView$show
+		};
 	});
 var _user$project$Controller_UserController$new = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$new};
 };
+var _user$project$Resource$updateModel = F2(
+	function (model, param) {
+		return _elm_lang$core$Native_Utils.update(
+			param,
+			{model: model});
+	});
 var _user$project$Resource$Param = F4(
 	function (a, b, c, d) {
 		return {currentPagePath: a, locationHistory: b, render: c, model: d};
@@ -10557,15 +10664,82 @@ var _user$project$Endpoint$view = function (param) {
 var _user$project$Endpoint$update = F2(
 	function (msg, param) {
 		var _p0 = msg;
-		if (_p0.ctor === 'NewUrl') {
-			return {
-				ctor: '_Tuple2',
-				_0: param,
-				_1: _elm_lang$navigation$Navigation$newUrl(_p0._0)
-			};
-		} else {
-			return A2(_user$project$Router$routing, _p0._0, param);
-		}
+		_v0_5:
+		do {
+			switch (_p0.ctor) {
+				case 'NewUrl':
+					return {
+						ctor: '_Tuple2',
+						_0: param,
+						_1: _elm_lang$navigation$Navigation$newUrl(_p0._0)
+					};
+				case 'UrlChange':
+					return A2(_user$project$Router$routing, _p0._0, param);
+				case 'PostReq':
+					if (_p0._0.ctor === 'Index') {
+						if (_p0._0._0.ctor === 'Success') {
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									param,
+									{
+										model: A2(
+											_user$project$Model$updateListPosts,
+											_p0._0._0._0,
+											A2(
+												_user$project$Model$updatePost,
+												param.model.post,
+												A2(_user$project$Model$updateUser, param.model.user, param.model)))
+									}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						} else {
+							break _v0_5;
+						}
+					} else {
+						if (_p0._0._0.ctor === 'Success') {
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									param,
+									{
+										model: A2(
+											_user$project$Model$updateListPosts,
+											param.model.listPosts,
+											A2(
+												_user$project$Model$updatePost,
+												_p0._0._0._0,
+												A2(_user$project$Model$updateUser, param.model.user, param.model)))
+									}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						} else {
+							break _v0_5;
+						}
+					}
+				default:
+					if ((_p0._0.ctor === 'Show') && (_p0._0._0.ctor === 'Success')) {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								param,
+								{
+									model: A2(
+										_user$project$Model$updateListPosts,
+										param.model.listPosts,
+										A2(
+											_user$project$Model$updatePost,
+											param.model.post,
+											A2(_user$project$Model$updateUser, _p0._0._0._0, param.model)))
+								}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						break _v0_5;
+					}
+			}
+		} while(false);
+		return {ctor: '_Tuple2', _0: param, _1: _elm_lang$core$Platform_Cmd$none};
 	});
 var _user$project$Endpoint$init = function (location) {
 	return {

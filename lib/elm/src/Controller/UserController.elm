@@ -2,9 +2,10 @@ module Controller.UserController exposing (new, show, edit)
 
 import Html exposing (Html)
 
-import Message exposing (Msg)
+import Message as Msg exposing (Msg)
 import Model exposing (Model)
 import View.UserView as View
+import Request.UserData as User
 
 new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
@@ -13,7 +14,7 @@ new model =
 show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 show id model =
   ( model
-  , Cmd.none
+  , Cmd.map Msg.UserReq (User.show id)
   , View.show
   )
 
