@@ -1,4 +1,4 @@
-module Router exposing (routing)
+module Router exposing (routing, requestRouting)
 
 import Html exposing (Html)
 import Navigation
@@ -10,6 +10,7 @@ import Router.Route as Route
 import Controller.PageController as PageCtrl
 import Controller.PostController as PostCtrl
 import Controller.UserController as UserCtrl
+import Request.Message as ReqMsg
 
 routing : Navigation.Location -> Param -> (Param, Cmd Msg)
 routing location param =
@@ -56,3 +57,24 @@ action path model =
     Route.ShowUser id -> UserCtrl.show     id model
     Route.EditUser id -> UserCtrl.edit     id model
 
+requestRouting : ReqMsg.Msg -> Param -> (Param, Cmd Msg)
+requestRouting msg param =
+  case msg of
+    ReqMsg.UserReq result ->
+      let
+        (model, cmd) = UserCtrl.update result param.model
+      in
+        ( ( param
+            |> updateModel model
+          )
+          , Cmd.none
+        )
+    ReqMsg.PostReq result ->
+      let
+        (model, cmd) = PostCtrl.update result param.model
+      in
+        ( ( param
+            |> updateModel model
+          )
+          , Cmd.none
+        )

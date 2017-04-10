@@ -12,10 +12,6 @@ import Message as Msg exposing (Msg)
 import Resource exposing (Param)
 import Router
 import View.HelperView as View
-import Request.Helper as Req
-import Request.PostData as Post
-import Request.UserData as User
-import Model
 
 -- main
 
@@ -43,38 +39,8 @@ update msg param =
       (param, Navigation.newUrl url)
     Msg.UrlChange location ->
       Router.routing location param
-    Msg.PostReq (Post.Index (Req.Success data)) ->
-      ( { param
-          | model = ( param.model
-                      |> Model.updateUser param.model.user
-                      |> Model.updatePost param.model.post
-                      |> Model.updateListPosts data
-                    )
-        }
-        , Cmd.none
-      )
-    Msg.PostReq (Post.Show (Req.Success data)) ->
-      ( { param
-          | model = ( param.model
-                      |> Model.updateUser param.model.user
-                      |> Model.updatePost data
-                      |> Model.updateListPosts param.model.listPosts
-                    )
-        }
-        , Cmd.none
-      )
-    Msg.UserReq (User.Show (Req.Success data)) ->
-      ( { param
-          | model = ( param.model
-                      |> Model.updateUser data
-                      |> Model.updatePost param.model.post
-                      |> Model.updateListPosts param.model.listPosts
-                    )
-        }
-        , Cmd.none
-      )
-    _ ->
-      (param, Cmd.none)
+    Msg.RequestMsg msg ->
+      Router.requestRouting msg param
 
 -- view
 

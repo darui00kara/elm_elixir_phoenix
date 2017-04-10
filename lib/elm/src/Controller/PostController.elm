@@ -1,10 +1,22 @@
-module Controller.PostController exposing (new, show, edit)
+module Controller.PostController exposing (update, new, show, edit)
 
 import Html exposing (Html)
 
 import Message exposing (Msg)
 import Model exposing (Model)
 import View.PostView as View
+import Request.PostData as Post
+import Request.Helper as Req
+
+update : Post.Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    Post.Show (Req.Success data) ->
+      (model, Cmd.none)
+    Post.Index (Req.Success data) ->
+      (model, Cmd.none)
+    _ ->
+      (model, Cmd.none)
 
 new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =

@@ -6,11 +6,22 @@ import Message as Msg exposing (Msg)
 import Model exposing (Model)
 import View.HelperView as View
 import Request.PostData as Post
+import Request.Helper as Req
+
+update : Post.Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    Post.Show (Req.Success data) ->
+      (model, Cmd.none)
+    Post.Index (Req.Success data) ->
+      (model, Cmd.none)
+    _ ->
+      (model, Cmd.none)
 
 home : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 home model =
   ( model
-  , Cmd.map Msg.PostReq Post.index
+  , Cmd.none --Cmd.map Msg.PostReq Post.index
   , View.renderPosts
   )
 
