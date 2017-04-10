@@ -3,7 +3,7 @@ module Controller.UserController exposing (update, new, show, edit)
 import Html exposing (Html)
 
 import Message as Msg exposing (Msg)
-import Model exposing (Model)
+import Model exposing (Model, updateUser)
 import View.UserView as View
 import Request.UserData as User
 import Request.Helper as Req
@@ -12,9 +12,7 @@ update : User.Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     User.Show (Req.Success data) ->
-      (model, Cmd.none)
-    User.Index (Req.Success data) ->
-      (model, Cmd.none)
+      (updateUser data model, Cmd.none)
     _ ->
       (model, Cmd.none)
 

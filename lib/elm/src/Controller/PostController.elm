@@ -3,7 +3,7 @@ module Controller.PostController exposing (update, new, show, edit)
 import Html exposing (Html)
 
 import Message exposing (Msg)
-import Model exposing (Model)
+import Model exposing (Model, updatePost, updateListPosts)
 import View.PostView as View
 import Request.PostData as Post
 import Request.Helper as Req
@@ -12,9 +12,9 @@ update : Post.Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Post.Show (Req.Success data) ->
-      (model, Cmd.none)
+      (updatePost data model, Cmd.none)
     Post.Index (Req.Success data) ->
-      (model, Cmd.none)
+      (updateListPosts data model, Cmd.none)
     _ ->
       (model, Cmd.none)
 

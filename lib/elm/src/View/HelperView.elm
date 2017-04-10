@@ -9,7 +9,7 @@ import Navigation
 import Message as Msg exposing (Msg)
 import Model exposing (Model)
 import Model.Post as Post exposing (..)
-import Router.Route as Route
+import Routing.Route as Route
 
 notFound : Model -> Html Msg
 notFound model =

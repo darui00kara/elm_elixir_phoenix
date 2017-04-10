@@ -3,7 +3,7 @@ module Resource exposing (Param, new)
 import Html exposing (Html)
 import Navigation exposing (Location)
 
-import Router.Route as Route exposing (PagePath)
+import Routing.Route as Route exposing (PagePath)
 import Message exposing (Msg)
 import Model exposing (Model)
 

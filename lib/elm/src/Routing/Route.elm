@@ -1,4 +1,4 @@
-module Router.Route exposing (PagePath, PagePath(..), build, take, isSuccess, toString)
+module Routing.Route exposing (PagePath, PagePath(..), build, take, isSuccess, toString)
 
 import Navigation exposing (Location)
 import UrlParser as Url exposing (oneOf, map, top, s, (</>), int)

@@ -9972,64 +9972,64 @@ var _user$project$Model$new = A3(
 	_user$project$Model_User$new,
 	_user$project$Model_Post$new,
 	{ctor: '[]'});
-var _user$project$Router_Route$EditUser = function (a) {
+var _user$project$Routing_Route$EditUser = function (a) {
 	return {ctor: 'EditUser', _0: a};
 };
-var _user$project$Router_Route$ShowUser = function (a) {
+var _user$project$Routing_Route$ShowUser = function (a) {
 	return {ctor: 'ShowUser', _0: a};
 };
-var _user$project$Router_Route$SignUp = {ctor: 'SignUp'};
-var _user$project$Router_Route$EditPost = function (a) {
+var _user$project$Routing_Route$SignUp = {ctor: 'SignUp'};
+var _user$project$Routing_Route$EditPost = function (a) {
 	return {ctor: 'EditPost', _0: a};
 };
-var _user$project$Router_Route$ShowPost = function (a) {
+var _user$project$Routing_Route$ShowPost = function (a) {
 	return {ctor: 'ShowPost', _0: a};
 };
-var _user$project$Router_Route$NewPost = {ctor: 'NewPost'};
-var _user$project$Router_Route$SignIn = {ctor: 'SignIn'};
-var _user$project$Router_Route$Contact = {ctor: 'Contact'};
-var _user$project$Router_Route$Help = {ctor: 'Help'};
-var _user$project$Router_Route$About = {ctor: 'About'};
-var _user$project$Router_Route$TopPage = {ctor: 'TopPage'};
-var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
+var _user$project$Routing_Route$NewPost = {ctor: 'NewPost'};
+var _user$project$Routing_Route$SignIn = {ctor: 'SignIn'};
+var _user$project$Routing_Route$Contact = {ctor: 'Contact'};
+var _user$project$Routing_Route$Help = {ctor: 'Help'};
+var _user$project$Routing_Route$About = {ctor: 'About'};
+var _user$project$Routing_Route$TopPage = {ctor: 'TopPage'};
+var _user$project$Routing_Route$route = _evancz$url_parser$UrlParser$oneOf(
 	{
 		ctor: '::',
-		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Router_Route$TopPage, _evancz$url_parser$UrlParser$top),
+		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Routing_Route$TopPage, _evancz$url_parser$UrlParser$top),
 		_1: {
 			ctor: '::',
 			_0: A2(
 				_evancz$url_parser$UrlParser$map,
-				_user$project$Router_Route$About,
+				_user$project$Routing_Route$About,
 				_evancz$url_parser$UrlParser$s('about')),
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_evancz$url_parser$UrlParser$map,
-					_user$project$Router_Route$Help,
+					_user$project$Routing_Route$Help,
 					_evancz$url_parser$UrlParser$s('help')),
 				_1: {
 					ctor: '::',
 					_0: A2(
 						_evancz$url_parser$UrlParser$map,
-						_user$project$Router_Route$Contact,
+						_user$project$Routing_Route$Contact,
 						_evancz$url_parser$UrlParser$s('contact')),
 					_1: {
 						ctor: '::',
 						_0: A2(
 							_evancz$url_parser$UrlParser$map,
-							_user$project$Router_Route$SignIn,
+							_user$project$Routing_Route$SignIn,
 							_evancz$url_parser$UrlParser$s('signin')),
 						_1: {
 							ctor: '::',
 							_0: A2(
 								_evancz$url_parser$UrlParser$map,
-								_user$project$Router_Route$NewPost,
+								_user$project$Routing_Route$NewPost,
 								_evancz$url_parser$UrlParser$s('new-post')),
 							_1: {
 								ctor: '::',
 								_0: A2(
 									_evancz$url_parser$UrlParser$map,
-									_user$project$Router_Route$ShowPost,
+									_user$project$Routing_Route$ShowPost,
 									A2(
 										_evancz$url_parser$UrlParser_ops['</>'],
 										_evancz$url_parser$UrlParser$s('post'),
@@ -10041,7 +10041,7 @@ var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
 									ctor: '::',
 									_0: A2(
 										_evancz$url_parser$UrlParser$map,
-										_user$project$Router_Route$EditPost,
+										_user$project$Routing_Route$EditPost,
 										A2(
 											_evancz$url_parser$UrlParser_ops['</>'],
 											_evancz$url_parser$UrlParser$s('post'),
@@ -10053,13 +10053,13 @@ var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
 										ctor: '::',
 										_0: A2(
 											_evancz$url_parser$UrlParser$map,
-											_user$project$Router_Route$SignUp,
+											_user$project$Routing_Route$SignUp,
 											_evancz$url_parser$UrlParser$s('signup')),
 										_1: {
 											ctor: '::',
 											_0: A2(
 												_evancz$url_parser$UrlParser$map,
-												_user$project$Router_Route$ShowUser,
+												_user$project$Routing_Route$ShowUser,
 												A2(
 													_evancz$url_parser$UrlParser_ops['</>'],
 													_evancz$url_parser$UrlParser$s('user'),
@@ -10071,7 +10071,7 @@ var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
 												ctor: '::',
 												_0: A2(
 													_evancz$url_parser$UrlParser$map,
-													_user$project$Router_Route$EditUser,
+													_user$project$Routing_Route$EditUser,
 													A2(
 														_evancz$url_parser$UrlParser_ops['</>'],
 														_evancz$url_parser$UrlParser$s('user'),
@@ -10091,23 +10091,23 @@ var _user$project$Router_Route$route = _evancz$url_parser$UrlParser$oneOf(
 			}
 		}
 	});
-var _user$project$Router_Route$build = function (location) {
-	return A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Router_Route$route, location);
+var _user$project$Routing_Route$build = function (location) {
+	return A2(_evancz$url_parser$UrlParser$parsePath, _user$project$Routing_Route$route, location);
 };
-var _user$project$Router_Route$NotFound = {ctor: 'NotFound'};
-var _user$project$Router_Route$take = function (maybePagePath) {
-	return A2(_elm_lang$core$Maybe$withDefault, _user$project$Router_Route$NotFound, maybePagePath);
+var _user$project$Routing_Route$NotFound = {ctor: 'NotFound'};
+var _user$project$Routing_Route$take = function (maybePagePath) {
+	return A2(_elm_lang$core$Maybe$withDefault, _user$project$Routing_Route$NotFound, maybePagePath);
 };
-var _user$project$Router_Route$isSuccess = function (maybePagePath) {
-	var _p0 = _user$project$Router_Route$take(maybePagePath);
+var _user$project$Routing_Route$isSuccess = function (maybePagePath) {
+	var _p0 = _user$project$Routing_Route$take(maybePagePath);
 	if (_p0.ctor === 'NotFound') {
 		return ' (Invalid)';
 	} else {
 		return ' (Success)';
 	}
 };
-var _user$project$Router_Route$toString = function (maybePagePath) {
-	var _p1 = _user$project$Router_Route$take(maybePagePath);
+var _user$project$Routing_Route$toString = function (maybePagePath) {
+	var _p1 = _user$project$Routing_Route$take(maybePagePath);
 	switch (_p1.ctor) {
 		case 'NotFound':
 			return 'not found';
@@ -10157,7 +10157,7 @@ var _user$project$View_HelperView$currentPage = function (maybePagePath) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text(
-							_user$project$Router_Route$toString(maybePagePath)),
+							_user$project$Routing_Route$toString(maybePagePath)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -10168,7 +10168,7 @@ var _user$project$View_HelperView$currentPage = function (maybePagePath) {
 						{
 							ctor: '::',
 							_0: _elm_lang$html$Html$text(
-								_user$project$Router_Route$isSuccess(maybePagePath)),
+								_user$project$Routing_Route$isSuccess(maybePagePath)),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
@@ -10499,13 +10499,21 @@ var _user$project$Controller_PostController$update = F2(
 		do {
 			if (_p0.ctor === 'Show') {
 				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Model$updatePost, _p0._0._0, model),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				} else {
 					break _v0_2;
 				}
 			} else {
 				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					return {
+						ctor: '_Tuple2',
+						_0: A2(_user$project$Model$updateListPosts, _p0._0._0, model),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				} else {
 					break _v0_2;
 				}
@@ -10579,23 +10587,15 @@ var _user$project$Controller_UserController$new = function (model) {
 var _user$project$Controller_UserController$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
-		_v0_2:
-		do {
-			if (_p0.ctor === 'Show') {
-				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					break _v0_2;
-				}
-			} else {
-				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					break _v0_2;
-				}
-			}
-		} while(false);
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		if ((_p0.ctor === 'Show') && (_p0._0.ctor === 'Success')) {
+			return {
+				ctor: '_Tuple2',
+				_0: A2(_user$project$Model$updateUser, _p0._0._0, model),
+				_1: _elm_lang$core$Platform_Cmd$none
+			};
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
 	});
 var _user$project$Resource$updateModel = F2(
 	function (model, param) {
@@ -10611,7 +10611,7 @@ var _user$project$Resource$new = F2(
 	function (location, renderFunc) {
 		return A4(
 			_user$project$Resource$Param,
-			_user$project$Router_Route$build(location),
+			_user$project$Routing_Route$build(location),
 			{
 				ctor: '::',
 				_0: location,
@@ -10690,14 +10690,14 @@ var _user$project$Router$updatePath = F2(
 		return _elm_lang$core$Native_Utils.update(
 			param,
 			{
-				currentPagePath: _user$project$Router_Route$build(location),
+				currentPagePath: _user$project$Routing_Route$build(location),
 				locationHistory: {ctor: '::', _0: location, _1: param.locationHistory}
 			});
 	});
 var _user$project$Router$routing = F2(
 	function (location, param) {
-		var path = _user$project$Router_Route$take(
-			_user$project$Router_Route$build(location));
+		var path = _user$project$Routing_Route$take(
+			_user$project$Routing_Route$build(location));
 		var _p4 = A2(_user$project$Router$action, path, param.model);
 		var model = _p4._0;
 		var cmd = _p4._1;

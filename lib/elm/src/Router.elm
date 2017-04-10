@@ -6,7 +6,7 @@ import Navigation
 import Message exposing (Msg)
 import Resource exposing (Param)
 import Model exposing (Model)
-import Router.Route as Route
+import Routing.Route as Route
 import Controller.PageController as PageCtrl
 import Controller.PostController as PostCtrl
 import Controller.UserController as UserCtrl
