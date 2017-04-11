@@ -3,7 +3,7 @@ module Router exposing (routing, requestRouting)
 import Html exposing (Html)
 import Navigation
 
-import Message exposing (Msg)
+import Message as Msg exposing (Msg)
 import Resource exposing (Param)
 import Model exposing (Model)
 import Routing.Route as Route
@@ -51,10 +51,14 @@ action path model =
     Route.Contact     -> PageCtrl.contact  model
     Route.SignIn      -> PageCtrl.signin   model
     Route.NewPost     -> PostCtrl.new      model
-    Route.ShowPost id -> PostCtrl.show     id model
+    Route.ShowPost id -> PostCtrl.show  id model
     Route.EditPost id -> PostCtrl.edit     id model
     Route.SignUp      -> UserCtrl.new      model
-    Route.ShowUser id -> UserCtrl.show     id model
+    Route.ShowUser id -> 
+      let
+        (updateModel, cmd, render) = UserCtrl.show id model
+      in
+        (updateModel, (Cmd.map Msg.RequestMsg cmd), render)
     Route.EditUser id -> UserCtrl.edit     id model
 
 requestRouting : ReqMsg.Msg -> Param -> (Param, Cmd Msg)

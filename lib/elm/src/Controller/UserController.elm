@@ -7,12 +7,13 @@ import Model exposing (Model, updateUser)
 import View.UserView as View
 import Request.UserData as User
 import Request.Helper as Req
+import Request.Message as ReqMsg
 
 update : User.Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     User.Show (Req.Success data) ->
-      (updateUser data model, Cmd.none)
+      ((model |> updateUser data), Cmd.none)
     _ ->
       (model, Cmd.none)
 
@@ -20,10 +21,10 @@ new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
   (model, Cmd.none, View.new)
 
-show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
+show : Int -> Model -> (Model, Cmd ReqMsg.Msg, (Model -> Html Msg))
 show id model =
   ( model
-  , Cmd.none --Cmd.map Msg.UserReq (User.show id)
+  , Cmd.map ReqMsg.UserReq (User.show id)
   , View.show
   )
 

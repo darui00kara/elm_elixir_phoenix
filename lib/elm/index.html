@@ -10579,7 +10579,15 @@ var _user$project$Controller_UserController$edit = F2(
 	});
 var _user$project$Controller_UserController$show = F2(
 	function (id, model) {
-		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$show};
+		return {
+			ctor: '_Tuple3',
+			_0: model,
+			_1: A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Request_Message$UserReq,
+				_user$project$Request_UserData$show(id)),
+			_2: _user$project$View_UserView$show
+		};
 	});
 var _user$project$Controller_UserController$new = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$new};
@@ -10645,7 +10653,16 @@ var _user$project$Router$action = F2(
 			case 'SignUp':
 				return _user$project$Controller_UserController$new(model);
 			case 'ShowUser':
-				return A2(_user$project$Controller_UserController$show, _p0._0, model);
+				var _p1 = A2(_user$project$Controller_UserController$show, _p0._0, model);
+				var updateModel = _p1._0;
+				var cmd = _p1._1;
+				var render = _p1._2;
+				return {
+					ctor: '_Tuple3',
+					_0: updateModel,
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
+					_2: render
+				};
 			default:
 				return A2(_user$project$Controller_UserController$edit, _p0._0, model);
 		}
@@ -10664,20 +10681,20 @@ var _user$project$Router$updateModel = F2(
 	});
 var _user$project$Router$requestRouting = F2(
 	function (msg, param) {
-		var _p1 = msg;
-		if (_p1.ctor === 'UserReq') {
-			var _p2 = A2(_user$project$Controller_UserController$update, _p1._0, param.model);
-			var model = _p2._0;
-			var cmd = _p2._1;
+		var _p2 = msg;
+		if (_p2.ctor === 'UserReq') {
+			var _p3 = A2(_user$project$Controller_UserController$update, _p2._0, param.model);
+			var model = _p3._0;
+			var cmd = _p3._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			var _p3 = A2(_user$project$Controller_PostController$update, _p1._0, param.model);
-			var model = _p3._0;
-			var cmd = _p3._1;
+			var _p4 = A2(_user$project$Controller_PostController$update, _p2._0, param.model);
+			var model = _p4._0;
+			var cmd = _p4._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
@@ -10698,10 +10715,10 @@ var _user$project$Router$routing = F2(
 	function (location, param) {
 		var path = _user$project$Routing_Route$take(
 			_user$project$Routing_Route$build(location));
-		var _p4 = A2(_user$project$Router$action, path, param.model);
-		var model = _p4._0;
-		var cmd = _p4._1;
-		var render = _p4._2;
+		var _p5 = A2(_user$project$Router$action, path, param.model);
+		var model = _p5._0;
+		var cmd = _p5._1;
+		var render = _p5._2;
 		return {
 			ctor: '_Tuple2',
 			_0: A2(
