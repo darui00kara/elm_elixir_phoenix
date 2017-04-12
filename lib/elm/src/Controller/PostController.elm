@@ -7,14 +7,15 @@ import Model exposing (Model, updatePost, updateListPosts)
 import View.PostView as View
 import Request.PostData as Post
 import Request.Helper as Req
+import Request.Message as ReqMsg
 
 update : Post.Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Post.Show (Req.Success data) ->
-      (updatePost data model, Cmd.none)
+      ((model |> updatePost data), Cmd.none)
     Post.Index (Req.Success data) ->
-      (updateListPosts data model, Cmd.none)
+      ((model |> updateListPosts data), Cmd.none)
     _ ->
       (model, Cmd.none)
 
@@ -22,9 +23,12 @@ new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
   (model, Cmd.none, View.new)
 
-show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
+show : Int -> Model -> (Model, Cmd ReqMsg.Msg, (Model -> Html Msg))
 show id model =
-  (model, Cmd.none, View.show)
+  ( model
+  , Cmd.map ReqMsg.PostReq (Post.show id)
+  , View.show
+  )
 
 edit : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 edit id model =

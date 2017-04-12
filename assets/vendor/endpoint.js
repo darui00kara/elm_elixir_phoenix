@@ -10481,29 +10481,13 @@ var _user$project$Controller_PageController$about = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$render};
 };
 var _user$project$Controller_PageController$home = function (model) {
-	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_HelperView$renderPosts};
+	return {
+		ctor: '_Tuple3',
+		_0: model,
+		_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Request_Message$PostReq, _user$project$Request_PostData$index),
+		_2: _user$project$View_HelperView$renderPosts
+	};
 };
-var _user$project$Controller_PageController$update = F2(
-	function (msg, model) {
-		var _p0 = msg;
-		_v0_2:
-		do {
-			if (_p0.ctor === 'Show') {
-				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					break _v0_2;
-				}
-			} else {
-				if (_p0._0.ctor === 'Success') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				} else {
-					break _v0_2;
-				}
-			}
-		} while(false);
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-	});
 
 var _user$project$View_PostView$edit = function (model) {
 	return A2(
@@ -10521,8 +10505,30 @@ var _user$project$View_PostView$show = function (model) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html$text('post show'),
-			_1: {ctor: '[]'}
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('post show'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								model.post.title,
+								A2(_elm_lang$core$Basics_ops['++'], ':', model.post.body))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		});
 };
 var _user$project$View_PostView$new = function (model) {
@@ -10542,7 +10548,15 @@ var _user$project$Controller_PostController$edit = F2(
 	});
 var _user$project$Controller_PostController$show = F2(
 	function (id, model) {
-		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_PostView$show};
+		return {
+			ctor: '_Tuple3',
+			_0: model,
+			_1: A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Request_Message$PostReq,
+				_user$project$Request_PostData$show(id)),
+			_2: _user$project$View_PostView$show
+		};
 	});
 var _user$project$Controller_PostController$new = function (model) {
 	return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_PostView$new};
@@ -10694,7 +10708,16 @@ var _user$project$Router$action = F2(
 			case 'NotFound':
 				return _user$project$Controller_PageController$notFound(model);
 			case 'TopPage':
-				return _user$project$Controller_PageController$home(model);
+				var _p1 = _user$project$Controller_PageController$home(model);
+				var updateModel = _p1._0;
+				var cmd = _p1._1;
+				var render = _p1._2;
+				return {
+					ctor: '_Tuple3',
+					_0: updateModel,
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
+					_2: render
+				};
 			case 'About':
 				return _user$project$Controller_PageController$about(model);
 			case 'Help':
@@ -10706,16 +10729,25 @@ var _user$project$Router$action = F2(
 			case 'NewPost':
 				return _user$project$Controller_PostController$new(model);
 			case 'ShowPost':
-				return A2(_user$project$Controller_PostController$show, _p0._0, model);
+				var _p2 = A2(_user$project$Controller_PostController$show, _p0._0, model);
+				var updateModel = _p2._0;
+				var cmd = _p2._1;
+				var render = _p2._2;
+				return {
+					ctor: '_Tuple3',
+					_0: updateModel,
+					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
+					_2: render
+				};
 			case 'EditPost':
 				return A2(_user$project$Controller_PostController$edit, _p0._0, model);
 			case 'SignUp':
 				return _user$project$Controller_UserController$new(model);
 			case 'ShowUser':
-				var _p1 = A2(_user$project$Controller_UserController$show, _p0._0, model);
-				var updateModel = _p1._0;
-				var cmd = _p1._1;
-				var render = _p1._2;
+				var _p3 = A2(_user$project$Controller_UserController$show, _p0._0, model);
+				var updateModel = _p3._0;
+				var cmd = _p3._1;
+				var render = _p3._2;
 				return {
 					ctor: '_Tuple3',
 					_0: updateModel,
@@ -10740,20 +10772,20 @@ var _user$project$Router$updateModel = F2(
 	});
 var _user$project$Router$requestRouting = F2(
 	function (msg, param) {
-		var _p2 = msg;
-		if (_p2.ctor === 'UserReq') {
-			var _p3 = A2(_user$project$Controller_UserController$update, _p2._0, param.model);
-			var model = _p3._0;
-			var cmd = _p3._1;
+		var _p4 = msg;
+		if (_p4.ctor === 'UserReq') {
+			var _p5 = A2(_user$project$Controller_UserController$update, _p4._0, param.model);
+			var model = _p5._0;
+			var cmd = _p5._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			var _p4 = A2(_user$project$Controller_PostController$update, _p2._0, param.model);
-			var model = _p4._0;
-			var cmd = _p4._1;
+			var _p6 = A2(_user$project$Controller_PostController$update, _p4._0, param.model);
+			var model = _p6._0;
+			var cmd = _p6._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
@@ -10774,10 +10806,10 @@ var _user$project$Router$routing = F2(
 	function (location, param) {
 		var path = _user$project$Routing_Route$take(
 			_user$project$Routing_Route$build(location));
-		var _p5 = A2(_user$project$Router$action, path, param.model);
-		var model = _p5._0;
-		var cmd = _p5._1;
-		var render = _p5._2;
+		var _p7 = A2(_user$project$Router$action, path, param.model);
+		var model = _p7._0;
+		var cmd = _p7._1;
+		var render = _p7._2;
 		return {
 			ctor: '_Tuple2',
 			_0: A2(

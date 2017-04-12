@@ -11,7 +11,10 @@ new model =
 
 show : Model -> Html Msg
 show model =
-  div [] [ text "post show" ]
+  div []
+    [ div [] [ text "post show" ]
+    , div [] [ text (model.post.title ++ ":" ++ model.post.body) ]
+    ]
 
 edit : Model -> Html Msg
 edit model =

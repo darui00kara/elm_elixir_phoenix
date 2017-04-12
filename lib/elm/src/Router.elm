@@ -45,13 +45,21 @@ action : Route.PagePath -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 action path model =
   case path of
     Route.NotFound    -> PageCtrl.notFound model
-    Route.TopPage     -> PageCtrl.home     model
+    Route.TopPage     ->
+      let
+        (updateModel, cmd, render) = PageCtrl.home model
+      in
+        (updateModel, (Cmd.map Msg.RequestMsg cmd), render)
     Route.About       -> PageCtrl.about    model
     Route.Help        -> PageCtrl.help     model
     Route.Contact     -> PageCtrl.contact  model
     Route.SignIn      -> PageCtrl.signin   model
     Route.NewPost     -> PostCtrl.new      model
-    Route.ShowPost id -> PostCtrl.show  id model
+    Route.ShowPost id ->
+      let
+        (updateModel, cmd, render) = PostCtrl.show id model
+      in
+        (updateModel, (Cmd.map Msg.RequestMsg cmd), render)
     Route.EditPost id -> PostCtrl.edit     id model
     Route.SignUp      -> UserCtrl.new      model
     Route.ShowUser id -> 
