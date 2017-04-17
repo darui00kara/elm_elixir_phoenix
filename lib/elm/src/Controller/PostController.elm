@@ -2,7 +2,7 @@ module Controller.PostController exposing (update, new, show, edit)
 
 import Html exposing (Html)
 
-import Message exposing (Msg)
+import Message as Msg exposing (Msg)
 import Model exposing (Model, updatePost, updateListPosts)
 import View.PostView as View
 import Request.PostData as Post
@@ -23,10 +23,10 @@ new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
   (model, Cmd.none, View.new)
 
-show : Int -> Model -> (Model, Cmd ReqMsg.Msg, (Model -> Html Msg))
+show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 show id model =
   ( model
-  , Cmd.map ReqMsg.PostReq (Post.show id)
+  , Cmd.map Msg.RequestMsg (Cmd.map ReqMsg.PostReq (Post.show id))
   , View.show
   )
 

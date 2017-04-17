@@ -21,10 +21,10 @@ new : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 new model =
   (model, Cmd.none, View.new)
 
-show : Int -> Model -> (Model, Cmd ReqMsg.Msg, (Model -> Html Msg))
+show : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 show id model =
   ( model
-  , Cmd.map ReqMsg.UserReq (User.show id)
+  , Cmd.map Msg.RequestMsg (Cmd.map ReqMsg.UserReq (User.show id))
   , View.show
   )
 

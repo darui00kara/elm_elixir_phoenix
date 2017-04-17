@@ -9,10 +9,10 @@ import Request.PostData as Post
 import Request.Helper as Req
 import Request.Message as ReqMsg
 
-home : Model -> (Model, Cmd ReqMsg.Msg, (Model -> Html Msg))
+home : Model -> (Model, Cmd Msg, (Model -> Html Msg))
 home model =
   ( model
-  , Cmd.map ReqMsg.PostReq Post.index
+  , Cmd.map Msg.RequestMsg (Cmd.map ReqMsg.PostReq Post.index)
   , View.renderPosts
   )
 
