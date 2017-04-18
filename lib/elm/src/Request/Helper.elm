@@ -1,7 +1,8 @@
-module Request.Helper exposing (ReqMsg(..), ReqResult, get)
+module Request.Helper exposing (ReqMsg(..), ReqResult, get, post)
 
-import Http exposing (Request, Error, get, send)
+import Http exposing (Request, Error, Body, get, send)
 import Json.Decode exposing (Decoder)
+import Json.Encode as Encode exposing (Value)
 
 type ReqMsg e a =
   Failure e
@@ -13,6 +14,10 @@ type alias ReqResult a =
 get : String -> (ReqResult a -> msg) -> Decoder a -> Cmd msg
 get apiUrl translation decoder =
   (Http.get apiUrl decoder) |> sendReq |> cmdMap translation
+
+post : String -> (ReqResult a -> msg) -> Decoder a -> Encode.Value -> Cmd msg
+post apiUrl translation decoder body =
+  (Http.post apiUrl (Http.jsonBody body) decoder) |> sendReq |> cmdMap translation
 
 sendReq : Http.Request a -> Cmd (ReqResult a)
 sendReq =

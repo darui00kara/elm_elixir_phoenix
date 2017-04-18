@@ -9862,6 +9862,18 @@ var _user$project$Request_Helper$get = F3(
 			_user$project$Request_Helper$sendReq(
 				A2(_elm_lang$http$Http$get, apiUrl, decoder)));
 	});
+var _user$project$Request_Helper$post = F4(
+	function (apiUrl, translation, decoder, body) {
+		return A2(
+			_user$project$Request_Helper$cmdMap,
+			translation,
+			_user$project$Request_Helper$sendReq(
+				A3(
+					_elm_lang$http$Http$post,
+					apiUrl,
+					_elm_lang$http$Http$jsonBody(body),
+					decoder)));
+	});
 var _user$project$Model_User$Schema = F3(
 	function (a, b, c) {
 		return {id: a, name: b, email: c};
