@@ -16,7 +16,7 @@ email : String -> (String, Encode.Value)
 email value =
   ("email", Encode.string value)
 
-user : User.Schema -> List (String, Encode.Value)
+user : User.Schema -> Encode.Value
 user schema =
   Encode.object
     [ id schema.id
