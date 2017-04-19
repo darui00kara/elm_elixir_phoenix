@@ -1,4 +1,4 @@
-module Resource exposing (Param, new)
+module Resource exposing (Param, new, updateModel)
 
 import Html exposing (Html)
 import Navigation exposing (Location)

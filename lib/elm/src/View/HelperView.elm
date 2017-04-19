@@ -74,5 +74,3 @@ currentPage maybePagePath =
     , li [] [ text (Route.toString maybePagePath) ]
     , li [] [ text (Route.isSuccess maybePagePath) ]
     ]
-
-

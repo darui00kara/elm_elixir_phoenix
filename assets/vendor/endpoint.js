@@ -9903,7 +9903,37 @@ var _user$project$Request_Helper$get = F3(
 			_user$project$Request_Helper$sendReq(
 				A2(_elm_lang$http$Http$get, apiUrl, decoder)));
 	});
+var _user$project$Request_Helper$post = F4(
+	function (apiUrl, translation, decoder, body) {
+		return A2(
+			_user$project$Request_Helper$cmdMap,
+			translation,
+			_user$project$Request_Helper$sendReq(
+				A3(
+					_elm_lang$http$Http$post,
+					apiUrl,
+					_elm_lang$http$Http$jsonBody(body),
+					decoder)));
+	});
 
+var _user$project$Model_User$email = F2(
+	function (newEmail, user) {
+		return _elm_lang$core$Native_Utils.update(
+			user,
+			{email: newEmail});
+	});
+var _user$project$Model_User$name = F2(
+	function (newName, user) {
+		return _elm_lang$core$Native_Utils.update(
+			user,
+			{name: newName});
+	});
+var _user$project$Model_User$id = F2(
+	function (newId, user) {
+		return _elm_lang$core$Native_Utils.update(
+			user,
+			{id: newId});
+	});
 var _user$project$Model_User$Schema = F3(
 	function (a, b, c) {
 		return {id: a, name: b, email: c};
@@ -9941,6 +9971,24 @@ var _user$project$Request_UserData$show = function (id) {
 		_user$project$Model_UserDecoder$user);
 };
 
+var _user$project$Model_Post$body = F2(
+	function (newBody, post) {
+		return _elm_lang$core$Native_Utils.update(
+			post,
+			{body: newBody});
+	});
+var _user$project$Model_Post$title = F2(
+	function (newTitle, post) {
+		return _elm_lang$core$Native_Utils.update(
+			post,
+			{title: newTitle});
+	});
+var _user$project$Model_Post$id = F2(
+	function (newId, post) {
+		return _elm_lang$core$Native_Utils.update(
+			post,
+			{id: newId});
+	});
 var _user$project$Model_Post$Schema = F3(
 	function (a, b, c) {
 		return {id: a, title: b, body: c};
@@ -9985,16 +10033,6 @@ var _user$project$Request_Message$UserReq = function (a) {
 	return {ctor: 'UserReq', _0: a};
 };
 
-var _user$project$Message$RequestMsg = function (a) {
-	return {ctor: 'RequestMsg', _0: a};
-};
-var _user$project$Message$NewUrl = function (a) {
-	return {ctor: 'NewUrl', _0: a};
-};
-var _user$project$Message$UrlChange = function (a) {
-	return {ctor: 'UrlChange', _0: a};
-};
-
 var _user$project$Model$updateListPosts = F2(
 	function (listPosts, model) {
 		return _elm_lang$core$Native_Utils.update(
@@ -10022,6 +10060,71 @@ var _user$project$Model$new = A3(
 	_user$project$Model_User$new,
 	_user$project$Model_Post$new,
 	{ctor: '[]'});
+
+var _user$project$Model_Form$inputPostForm = F2(
+	function (item, post) {
+		var _p0 = item;
+		if (_p0.ctor === 'Title') {
+			return A2(_user$project$Model_Post$title, _p0._0, post);
+		} else {
+			return A2(_user$project$Model_Post$body, _p0._0, post);
+		}
+	});
+var _user$project$Model_Form$inputUserForm = F2(
+	function (item, user) {
+		var _p1 = item;
+		if (_p1.ctor === 'Name') {
+			return A2(_user$project$Model_User$name, _p1._0, user);
+		} else {
+			return A2(_user$project$Model_User$email, _p1._0, user);
+		}
+	});
+var _user$project$Model_Form$input = F2(
+	function (msg, model) {
+		var _p2 = msg;
+		if (_p2.ctor === 'UserForm') {
+			return A2(
+				_user$project$Model$updateUser,
+				A2(_user$project$Model_Form$inputUserForm, _p2._0, model.user),
+				model);
+		} else {
+			return A2(
+				_user$project$Model$updatePost,
+				A2(_user$project$Model_Form$inputPostForm, _p2._0, model.post),
+				model);
+		}
+	});
+var _user$project$Model_Form$Email = function (a) {
+	return {ctor: 'Email', _0: a};
+};
+var _user$project$Model_Form$Name = function (a) {
+	return {ctor: 'Name', _0: a};
+};
+var _user$project$Model_Form$Body = function (a) {
+	return {ctor: 'Body', _0: a};
+};
+var _user$project$Model_Form$Title = function (a) {
+	return {ctor: 'Title', _0: a};
+};
+var _user$project$Model_Form$PostForm = function (a) {
+	return {ctor: 'PostForm', _0: a};
+};
+var _user$project$Model_Form$UserForm = function (a) {
+	return {ctor: 'UserForm', _0: a};
+};
+
+var _user$project$Message$FormInput = function (a) {
+	return {ctor: 'FormInput', _0: a};
+};
+var _user$project$Message$RequestMsg = function (a) {
+	return {ctor: 'RequestMsg', _0: a};
+};
+var _user$project$Message$NewUrl = function (a) {
+	return {ctor: 'NewUrl', _0: a};
+};
+var _user$project$Message$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
 
 var _user$project$Routing_Route$EditUser = function (a) {
 	return {ctor: 'EditUser', _0: a};
@@ -10484,7 +10587,10 @@ var _user$project$Controller_PageController$home = function (model) {
 	return {
 		ctor: '_Tuple3',
 		_0: model,
-		_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Request_Message$PostReq, _user$project$Request_PostData$index),
+		_1: A2(
+			_elm_lang$core$Platform_Cmd$map,
+			_user$project$Message$RequestMsg,
+			A2(_elm_lang$core$Platform_Cmd$map, _user$project$Request_Message$PostReq, _user$project$Request_PostData$index)),
 		_2: _user$project$View_HelperView$renderPosts
 	};
 };
@@ -10553,8 +10659,11 @@ var _user$project$Controller_PostController$show = F2(
 			_0: model,
 			_1: A2(
 				_elm_lang$core$Platform_Cmd$map,
-				_user$project$Request_Message$PostReq,
-				_user$project$Request_PostData$show(id)),
+				_user$project$Message$RequestMsg,
+				A2(
+					_elm_lang$core$Platform_Cmd$map,
+					_user$project$Request_Message$PostReq,
+					_user$project$Request_PostData$show(id))),
 			_2: _user$project$View_PostView$show
 		};
 	});
@@ -10635,13 +10744,120 @@ var _user$project$View_UserView$show = function (model) {
 };
 var _user$project$View_UserView$new = function (model) {
 	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html$text('new user'),
-			_1: {ctor: '[]'}
-		});
+		_elm_lang$html$Html$map,
+		_user$project$Message$FormInput,
+		A2(
+			_elm_lang$html$Html$map,
+			_user$project$Model_Form$UserForm,
+			A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('new user'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$h2,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Signup Form'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$label,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$for('name-field'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Name:'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$input,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$id('name-field'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$type_('text'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$placeholder('Name'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Events$onInput(_user$project$Model_Form$Name),
+															_1: {ctor: '[]'}
+														}
+													}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$label,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$for('email-field'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Email:'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$input,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$id('email-field'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('text'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Events$onInput(_user$project$Model_Form$Email),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													},
+													{ctor: '[]'}),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				})));
 };
 
 var _user$project$Controller_UserController$edit = F2(
@@ -10655,8 +10871,11 @@ var _user$project$Controller_UserController$show = F2(
 			_0: model,
 			_1: A2(
 				_elm_lang$core$Platform_Cmd$map,
-				_user$project$Request_Message$UserReq,
-				_user$project$Request_UserData$show(id)),
+				_user$project$Message$RequestMsg,
+				A2(
+					_elm_lang$core$Platform_Cmd$map,
+					_user$project$Request_Message$UserReq,
+					_user$project$Request_UserData$show(id))),
 			_2: _user$project$View_UserView$show
 		};
 	});
@@ -10708,16 +10927,7 @@ var _user$project$Router$action = F2(
 			case 'NotFound':
 				return _user$project$Controller_PageController$notFound(model);
 			case 'TopPage':
-				var _p1 = _user$project$Controller_PageController$home(model);
-				var updateModel = _p1._0;
-				var cmd = _p1._1;
-				var render = _p1._2;
-				return {
-					ctor: '_Tuple3',
-					_0: updateModel,
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
-					_2: render
-				};
+				return _user$project$Controller_PageController$home(model);
 			case 'About':
 				return _user$project$Controller_PageController$about(model);
 			case 'Help':
@@ -10729,31 +10939,13 @@ var _user$project$Router$action = F2(
 			case 'NewPost':
 				return _user$project$Controller_PostController$new(model);
 			case 'ShowPost':
-				var _p2 = A2(_user$project$Controller_PostController$show, _p0._0, model);
-				var updateModel = _p2._0;
-				var cmd = _p2._1;
-				var render = _p2._2;
-				return {
-					ctor: '_Tuple3',
-					_0: updateModel,
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
-					_2: render
-				};
+				return A2(_user$project$Controller_PostController$show, _p0._0, model);
 			case 'EditPost':
 				return A2(_user$project$Controller_PostController$edit, _p0._0, model);
 			case 'SignUp':
 				return _user$project$Controller_UserController$new(model);
 			case 'ShowUser':
-				var _p3 = A2(_user$project$Controller_UserController$show, _p0._0, model);
-				var updateModel = _p3._0;
-				var cmd = _p3._1;
-				var render = _p3._2;
-				return {
-					ctor: '_Tuple3',
-					_0: updateModel,
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Message$RequestMsg, cmd),
-					_2: render
-				};
+				return A2(_user$project$Controller_UserController$show, _p0._0, model);
 			default:
 				return A2(_user$project$Controller_UserController$edit, _p0._0, model);
 		}
@@ -10772,20 +10964,20 @@ var _user$project$Router$updateModel = F2(
 	});
 var _user$project$Router$requestRouting = F2(
 	function (msg, param) {
-		var _p4 = msg;
-		if (_p4.ctor === 'UserReq') {
-			var _p5 = A2(_user$project$Controller_UserController$update, _p4._0, param.model);
-			var model = _p5._0;
-			var cmd = _p5._1;
+		var _p1 = msg;
+		if (_p1.ctor === 'UserReq') {
+			var _p2 = A2(_user$project$Controller_UserController$update, _p1._0, param.model);
+			var model = _p2._0;
+			var cmd = _p2._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
 				_1: _elm_lang$core$Platform_Cmd$none
 			};
 		} else {
-			var _p6 = A2(_user$project$Controller_PostController$update, _p4._0, param.model);
-			var model = _p6._0;
-			var cmd = _p6._1;
+			var _p3 = A2(_user$project$Controller_PostController$update, _p1._0, param.model);
+			var model = _p3._0;
+			var cmd = _p3._1;
 			return {
 				ctor: '_Tuple2',
 				_0: A2(_user$project$Router$updateModel, model, param),
@@ -10806,10 +10998,10 @@ var _user$project$Router$routing = F2(
 	function (location, param) {
 		var path = _user$project$Routing_Route$take(
 			_user$project$Routing_Route$build(location));
-		var _p7 = A2(_user$project$Router$action, path, param.model);
-		var model = _p7._0;
-		var cmd = _p7._1;
-		var render = _p7._2;
+		var _p4 = A2(_user$project$Router$action, path, param.model);
+		var model = _p4._0;
+		var cmd = _p4._1;
+		var render = _p4._2;
 		return {
 			ctor: '_Tuple2',
 			_0: A2(
@@ -10860,8 +11052,17 @@ var _user$project$Endpoint$update = F2(
 				};
 			case 'UrlChange':
 				return A2(_user$project$Router$routing, _p0._0, param);
-			default:
+			case 'RequestMsg':
 				return A2(_user$project$Router$requestRouting, _p0._0, param);
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: A2(
+						_user$project$Resource$updateModel,
+						A2(_user$project$Model_Form$input, _p0._0, param.model),
+						param),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Endpoint$init = function (location) {
