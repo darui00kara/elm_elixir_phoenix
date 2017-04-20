@@ -10023,10 +10023,13 @@ var _user$project$Model_Form$inputPostForm = F2(
 var _user$project$Model_Form$inputUserForm = F2(
 	function (item, user) {
 		var _p1 = item;
-		if (_p1.ctor === 'Name') {
-			return A2(_user$project$Model_User$name, _p1._0, user);
-		} else {
-			return A2(_user$project$Model_User$email, _p1._0, user);
+		switch (_p1.ctor) {
+			case 'Name':
+				return A2(_user$project$Model_User$name, _p1._0, user);
+			case 'Email':
+				return A2(_user$project$Model_User$email, _p1._0, user);
+			default:
+				return user;
 		}
 	});
 var _user$project$Model_Form$input = F2(
@@ -10044,6 +10047,7 @@ var _user$project$Model_Form$input = F2(
 				model);
 		}
 	});
+var _user$project$Model_Form$SignUp = {ctor: 'SignUp'};
 var _user$project$Model_Form$Email = function (a) {
 	return {ctor: 'Email', _0: a};
 };

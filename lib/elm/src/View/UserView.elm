@@ -28,6 +28,7 @@ new model =
                     , placeholder "Email"
                     , onInput Form.Email ]
                     []
+            , button [ onClick Form.Signup ] [ text "signup" ]
             ]
         ]
       )
