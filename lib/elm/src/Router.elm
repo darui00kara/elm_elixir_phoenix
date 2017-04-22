@@ -54,6 +54,7 @@ action path model =
     Route.ShowPost id -> PostCtrl.show  id model
     Route.EditPost id -> PostCtrl.edit  id model
     Route.SignUp      -> UserCtrl.new      model
+    Route.CreateUser  -> UserCtrl.create   model
     Route.ShowUser id -> UserCtrl.show  id model
     Route.EditUser id -> UserCtrl.edit  id model
 

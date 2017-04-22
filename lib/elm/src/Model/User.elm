@@ -10,14 +10,14 @@ new : Schema
 new =
   Schema 0 "" ""
 
-id : Int -> Schema -> Schema
-id newId user =
+id : Schema -> Int -> Schema
+id user newId =
   { user | id = newId }
 
-name : String -> Schema -> Schema
-name newName user =
+name : Schema ->  String -> Schema
+name user newName =
   { user | name = newName }
 
-email : String -> Schema -> Schema
-email newEmail user =
+email : Schema -> String -> Schema
+email user newEmail =
   { user | email = newEmail }

@@ -13,14 +13,14 @@ new : Model
 new =
   Model User.new Post.new []
 
-updateUser : User.Schema -> Model -> Model
-updateUser user model =
+updateUser : Model -> User.Schema -> Model
+updateUser model user =
   { model | user = user }
 
-updatePost : Post.Schema -> Model -> Model
-updatePost post model =
+updatePost : Model -> Post.Schema -> Model
+updatePost model post =
   { model | post = post }
 
-updateListPosts : List Post.Schema -> Model -> Model
-updateListPosts listPosts model =
+updateListPosts : Model -> List Post.Schema -> Model
+updateListPosts model listPosts =
   { model | listPosts = listPosts }

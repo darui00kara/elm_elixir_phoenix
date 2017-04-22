@@ -22,6 +22,6 @@ new location renderFunc =
     renderFunc
     Model.new
 
-updateModel : Model -> Param -> Param
-updateModel model param =
+updateModel : Param -> Model -> Param
+updateModel param model =
   { param | model = model }

@@ -10,13 +10,15 @@ import Model.Form as Form
 
 new : Model -> Html Msg
 new model =
-  Html.map Msg.FormInput
-    ( Html.map Form.UserForm
-      ( div []
-        [ div [] [ text "new user" ]
-        , div []
-            [ h2 [] [ text "Signup Form" ]
-            , label [ for "name-field" ] [ text "Name:" ]
+  Html.map Msg.FormMsg
+  (
+    div []
+      [ div [] [ text "new user" ]
+      , div []
+        [ h2 [] [ text "Signup Form" ]
+        , Html.map Form.UserForm
+          ( div []
+            [ label [ for "name-field" ] [ text "Name:" ]
             , input [ id "name-field"
                     , type_ "text"
                     , placeholder "Name"
@@ -28,11 +30,12 @@ new model =
                     , placeholder "Email"
                     , onInput Form.Email ]
                     []
-            , button [ onClick Form.Signup ] [ text "signup" ]
             ]
+          )
+        , button [ onClick (Form.Submit "/create-user") ] [ text "signup" ]
         ]
-      )
-    )
+      ]
+  )
 
 show : Model -> Html Msg
 show model =

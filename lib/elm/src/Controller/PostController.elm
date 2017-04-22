@@ -13,9 +13,9 @@ update : Post.Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     Post.Show (Req.Success data) ->
-      ((model |> updatePost data), Cmd.none)
+      (data |> updatePost model, Cmd.none)
     Post.Index (Req.Success data) ->
-      ((model |> updateListPosts data), Cmd.none)
+      (data |> updateListPosts model, Cmd.none)
     _ ->
       (model, Cmd.none)
 

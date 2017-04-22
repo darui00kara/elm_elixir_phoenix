@@ -9,4 +9,4 @@ type Msg =
   UrlChange Location
   | NewUrl String
   | RequestMsg ReqMsg.Msg
-  | FormInput Form.Msg
+  | FormMsg Form.Msg

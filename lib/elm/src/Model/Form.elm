@@ -1,40 +1,42 @@
-module Model.Form exposing (Msg(..), UserItem(..), PostItem(..), input)
+module Model.Form exposing (Msg(..), UserFormItem(..), PostFormItem(..), update)
+
+import Navigation exposing (newUrl)
 
 import Model exposing (Model)
 import Model.User as User
 import Model.Post as Post
 
-type UserItem =
+type UserFormItem =
   Name String
   | Email String
-  | SignUp
 
-type PostItem =
+type PostFormItem =
   Title String
   | Body String
 
 type Msg =
-  UserForm UserItem
-  | PostForm PostItem
+  UserForm UserFormItem
+  | PostForm PostFormItem
+  | Submit String
 
-input : Msg -> Model -> Model
-input msg model =
+update : Msg -> Model -> (Model, Cmd msg)
+update msg model =
   case msg of
-    UserForm item ->
-      Model.updateUser (model.user |> inputUserForm item) model
-    PostForm item ->
-      Model.updatePost (model.post |> inputPostForm item) model
+    UserForm form ->
+      (updateUserForm form model.user |> Model.updateUser model, Cmd.none)
+    PostForm form ->
+      (updatePostForm form model.post |> Model.updatePost model, Cmd.none)
+    Submit url ->
+      (model, Navigation.newUrl url)
 
-inputUserForm : UserItem -> User.Schema -> User.Schema
-inputUserForm item user =
+updateUserForm : UserFormItem -> User.Schema -> User.Schema
+updateUserForm item user =
   case item of
-    Name  value -> user |> User.name  value
-    Email value -> user |> User.email value
-    SignUp -> user
+    Name  value -> value |> User.name  user
+    Email value -> value |> User.email user
 
-inputPostForm : PostItem -> Post.Schema -> Post.Schema
-inputPostForm item post =
+updatePostForm : PostFormItem -> Post.Schema -> Post.Schema
+updatePostForm item post =
   case item of
-    Title value -> post |> Post.title value
-    Body  value -> post |> Post.body  value
-
+    Title value -> value |> Post.title post
+    Body  value -> value |> Post.body  post

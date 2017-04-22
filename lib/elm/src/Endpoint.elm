@@ -42,8 +42,11 @@ update msg param =
       Router.routing location param
     Msg.RequestMsg msg ->
       Router.requestRouting msg param
-    Msg.FormInput msg ->
-      (param |> Resource.updateModel (param.model |> Form.input msg), Cmd.none)
+    Msg.FormMsg msg ->
+      let
+        (model, cmd) = Form.update msg param.model
+      in
+        (model |> Resource.updateModel param, cmd)
 
 -- view
 

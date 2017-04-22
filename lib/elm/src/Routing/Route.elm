@@ -14,6 +14,7 @@ type PagePath =
   | ShowPost Int
   | EditPost Int
   | SignUp
+  | CreateUser
   | ShowUser Int
   | EditUser Int
 
@@ -21,16 +22,17 @@ route : Url.Parser (PagePath -> a) a
 route =
   oneOf
     [ map TopPage  top
-    , map About    (s "about")
-    , map Help     (s "help")
-    , map Contact  (s "contact")
-    , map SignIn   (s "signin")
-    , map NewPost  (s "new-post")
-    , map ShowPost (s "post" </> int </> s "show")
-    , map EditPost (s "post" </> int </> s "edit")
-    , map SignUp   (s "signup")
-    , map ShowUser (s "user" </> int </> s "show")
-    , map EditUser (s "user" </> int </> s "edit")
+    , map About      (s "about")
+    , map Help       (s "help")
+    , map Contact    (s "contact")
+    , map SignIn     (s "signin")
+    , map NewPost    (s "new-post")
+    , map ShowPost   (s "post" </> int </> s "show")
+    , map EditPost   (s "post" </> int </> s "edit")
+    , map SignUp     (s "signup")
+    , map CreateUser (s "create-user")
+    , map ShowUser   (s "user" </> int </> s "show")
+    , map EditUser   (s "user" </> int </> s "edit")
     ]
 
 take : Maybe PagePath -> PagePath
@@ -62,5 +64,6 @@ toString maybePagePath =
     ShowPost id -> "show post"
     EditPost id -> "edit post"
     SignUp      -> "signup"
+    CreateUser  -> "create user"
     ShowUser id -> "show user"
     EditUser id -> "edit user"
