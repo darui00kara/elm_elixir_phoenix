@@ -1,4 +1,12 @@
-module Request.Helper exposing (ReqMsg(..), ReqResult, get, post)
+module Request.Helper exposing
+  ( ReqMsg(..)
+  , ReqResult
+  , get
+  , post
+  , makeRequest
+  , getRequest
+  , postRequest
+  )
 
 import Http exposing (Request, Error, Body, get, send)
 import Json.Decode exposing (Decoder)
@@ -32,3 +40,37 @@ resultToMessage result =
 cmdMap : (ReqResult a -> msg) -> Cmd (ReqResult a) -> Cmd msg
 cmdMap translation cmd =
   Cmd.map translation cmd
+
+makeRequest :
+  String
+  -> List Http.Header
+  -> String
+  -> Decoder a
+  -> Http.Body
+  -> Http.Request a
+makeRequest url headers method decoder body =
+  Http.request
+    { url = url
+    , headers = headers
+    , method = method
+    , expect = Http.expectJson decoder
+    , body = body
+    , timeout = Nothing
+    , withCredentials = False
+    }
+
+getRequest : String -> List Http.Header -> Decoder a -> Http.Request a
+getRequest url headers decoder =
+  makeRequest url headers "GET" decoder Http.emptyBody
+
+postRequest : String -> List Http.Header -> Decoder a -> Encode.Value -> Http.Request a
+postRequest url headers decoder body =
+  makeRequest url headers "POST" decoder (Http.jsonBody body)
+
+putRequest : String -> List Http.Header -> Decoder a -> Encode.Value -> Http.Request a
+putRequest url headers decoder body =
+  makeRequest url headers "PUT" decoder (Http.jsonBody body)
+
+deleteRequest : String -> List Http.Header -> Decoder a -> Encode.Value -> Http.Request a
+deleteRequest url headers decoder body =
+  makeRequest url headers "DELETE" decoder (Http.jsonBody body)
