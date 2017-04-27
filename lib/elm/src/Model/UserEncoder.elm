@@ -1,4 +1,4 @@
-module Model.UserEncoder exposing (user, createUser, updateUser, deleteUser)
+module Model.UserEncoder exposing (createUser, updateUser, deleteUser)
 
 import Json.Encode as Encode exposing (Value, int, string, object)
 
@@ -15,17 +15,6 @@ name value =
 email : String -> (String, Encode.Value)
 email value =
   ("email", Encode.string value)
-
-user : User.Schema -> Encode.Value
-user schema =
-  Encode.object
-    [ ("user"
-      , Encode.object
-          [ name schema.name
-          , email schema.email
-          ]
-      )
-    ]
 
 toObject : User.Schema -> Encode.Value
 toObject user =

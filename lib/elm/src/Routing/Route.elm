@@ -17,6 +17,7 @@ type PagePath =
   | CreateUser
   | ShowUser Int
   | EditUser Int
+  | UpdateUser
 
 route : Url.Parser (PagePath -> a) a
 route =
@@ -33,6 +34,7 @@ route =
     , map CreateUser (s "create-user")
     , map ShowUser   (s "user" </> int </> s "show")
     , map EditUser   (s "user" </> int </> s "edit")
+    , map UpdateUser (s "update-user")
     ]
 
 take : Maybe PagePath -> PagePath
@@ -67,3 +69,4 @@ toString maybePagePath =
     CreateUser  -> "create user"
     ShowUser id -> "show user"
     EditUser id -> "edit user"
+    UpdateUser  -> "update user"

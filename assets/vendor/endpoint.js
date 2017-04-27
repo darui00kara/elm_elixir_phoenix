@@ -9876,6 +9876,53 @@ var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
 
+var _user$project$Request_Helper$makeRequest = F5(
+	function (url, headers, method, decoder, body) {
+		return _elm_lang$http$Http$request(
+			{
+				url: url,
+				headers: headers,
+				method: method,
+				expect: _elm_lang$http$Http$expectJson(decoder),
+				body: body,
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _user$project$Request_Helper$getRequest = F3(
+	function (url, headers, decoder) {
+		return A5(_user$project$Request_Helper$makeRequest, url, headers, 'GET', decoder, _elm_lang$http$Http$emptyBody);
+	});
+var _user$project$Request_Helper$postRequest = F4(
+	function (url, headers, decoder, body) {
+		return A5(
+			_user$project$Request_Helper$makeRequest,
+			url,
+			headers,
+			'POST',
+			decoder,
+			_elm_lang$http$Http$jsonBody(body));
+	});
+var _user$project$Request_Helper$putRequest = F4(
+	function (url, headers, decoder, body) {
+		return A5(
+			_user$project$Request_Helper$makeRequest,
+			url,
+			headers,
+			'PUT',
+			decoder,
+			_elm_lang$http$Http$jsonBody(body));
+	});
+var _user$project$Request_Helper$deleteRequest = F4(
+	function (url, headers, decoder, body) {
+		return A5(
+			_user$project$Request_Helper$makeRequest,
+			url,
+			headers,
+			'DELETE',
+			decoder,
+			_elm_lang$http$Http$jsonBody(body));
+	});
 var _user$project$Request_Helper$cmdMap = F2(
 	function (translation, cmd) {
 		return A2(_elm_lang$core$Platform_Cmd$map, translation, cmd);
@@ -9901,7 +9948,11 @@ var _user$project$Request_Helper$get = F3(
 			_user$project$Request_Helper$cmdMap,
 			translation,
 			_user$project$Request_Helper$sendReq(
-				A2(_elm_lang$http$Http$get, apiUrl, decoder)));
+				A3(
+					_user$project$Request_Helper$getRequest,
+					apiUrl,
+					{ctor: '[]'},
+					decoder)));
 	});
 var _user$project$Request_Helper$post = F4(
 	function (apiUrl, translation, decoder, body) {
@@ -9909,11 +9960,25 @@ var _user$project$Request_Helper$post = F4(
 			_user$project$Request_Helper$cmdMap,
 			translation,
 			_user$project$Request_Helper$sendReq(
-				A3(
-					_elm_lang$http$Http$post,
+				A4(
+					_user$project$Request_Helper$postRequest,
 					apiUrl,
-					_elm_lang$http$Http$jsonBody(body),
-					decoder)));
+					{ctor: '[]'},
+					decoder,
+					body)));
+	});
+var _user$project$Request_Helper$put = F4(
+	function (apiUrl, translation, decoder, body) {
+		return A2(
+			_user$project$Request_Helper$cmdMap,
+			translation,
+			_user$project$Request_Helper$sendReq(
+				A4(
+					_user$project$Request_Helper$putRequest,
+					apiUrl,
+					{ctor: '[]'},
+					decoder,
+					body)));
 	});
 
 var _user$project$Model_User$email = F2(
@@ -9967,24 +10032,58 @@ var _user$project$Model_UserEncoder$name = function (value) {
 		_1: _elm_lang$core$Json_Encode$string(value)
 	};
 };
-var _user$project$Model_UserEncoder$user = function (schema) {
+var _user$project$Model_UserEncoder$toObject = function (user) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: _user$project$Model_UserEncoder$name(user.name),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Model_UserEncoder$email(user.email),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Model_UserEncoder$createUser = function (user) {
 	return _elm_lang$core$Json_Encode$object(
 		{
 			ctor: '::',
 			_0: {
 				ctor: '_Tuple2',
 				_0: 'user',
-				_1: _elm_lang$core$Json_Encode$object(
-					{
-						ctor: '::',
-						_0: _user$project$Model_UserEncoder$name(schema.name),
-						_1: {
-							ctor: '::',
-							_0: _user$project$Model_UserEncoder$email(schema.email),
-							_1: {ctor: '[]'}
-						}
-					})
+				_1: _user$project$Model_UserEncoder$toObject(user)
 			},
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Model_UserEncoder$id = function (value) {
+	return {
+		ctor: '_Tuple2',
+		_0: 'id',
+		_1: _elm_lang$core$Json_Encode$int(value)
+	};
+};
+var _user$project$Model_UserEncoder$updateUser = function (user) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: _user$project$Model_UserEncoder$id(user.id),
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'user',
+					_1: _user$project$Model_UserEncoder$toObject(user)
+				},
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Model_UserEncoder$deleteUser = function (user) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: _user$project$Model_UserEncoder$id(user.id),
 			_1: {ctor: '[]'}
 		});
 };
@@ -9992,13 +10091,27 @@ var _user$project$Model_UserEncoder$user = function (schema) {
 var _user$project$Request_UserData$SignUp = function (a) {
 	return {ctor: 'SignUp', _0: a};
 };
-var _user$project$Request_UserData$signUp = function (schema) {
+var _user$project$Request_UserData$signUp = function (user) {
 	return A4(
 		_user$project$Request_Helper$post,
 		'http://localhost:4000/api/users',
 		_user$project$Request_UserData$SignUp,
 		_user$project$Model_UserDecoder$user,
-		_user$project$Model_UserEncoder$user(schema));
+		_user$project$Model_UserEncoder$createUser(user));
+};
+var _user$project$Request_UserData$Edit = function (a) {
+	return {ctor: 'Edit', _0: a};
+};
+var _user$project$Request_UserData$edit = function (user) {
+	return A4(
+		_user$project$Request_Helper$put,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://localhost:4000/api/users/',
+			_elm_lang$core$Basics$toString(user.id)),
+		_user$project$Request_UserData$Edit,
+		_user$project$Model_UserDecoder$user,
+		_user$project$Model_UserEncoder$updateUser(user));
 };
 var _user$project$Request_UserData$Index = function (a) {
 	return {ctor: 'Index', _0: a};
@@ -10191,6 +10304,7 @@ var _user$project$Message$UrlChange = function (a) {
 	return {ctor: 'UrlChange', _0: a};
 };
 
+var _user$project$Routing_Route$UpdateUser = {ctor: 'UpdateUser'};
 var _user$project$Routing_Route$EditUser = function (a) {
 	return {ctor: 'EditUser', _0: a};
 };
@@ -10305,7 +10419,14 @@ var _user$project$Routing_Route$route = _evancz$url_parser$UrlParser$oneOf(
 																_evancz$url_parser$UrlParser_ops['</>'],
 																_evancz$url_parser$UrlParser$int,
 																_evancz$url_parser$UrlParser$s('edit')))),
-													_1: {ctor: '[]'}
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_evancz$url_parser$UrlParser$map,
+															_user$project$Routing_Route$UpdateUser,
+															_evancz$url_parser$UrlParser$s('update-user')),
+														_1: {ctor: '[]'}
+													}
 												}
 											}
 										}
@@ -10360,8 +10481,10 @@ var _user$project$Routing_Route$toString = function (maybePagePath) {
 			return 'create user';
 		case 'ShowUser':
 			return 'show user';
-		default:
+		case 'EditUser':
 			return 'edit user';
+		default:
+			return 'update user';
 	}
 };
 
@@ -10777,13 +10900,158 @@ var _user$project$Controller_PostController$update = F2(
 
 var _user$project$View_UserView$edit = function (model) {
 	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html$text('edit user'),
-			_1: {ctor: '[]'}
-		});
+		_elm_lang$html$Html$map,
+		_user$project$Message$FormMsg,
+		A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('edit user'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$h2,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'user(',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_elm_lang$core$Basics$toString(model.user.id),
+												') Edit Form'))),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$map,
+									_user$project$Model_Form$UserForm,
+									A2(
+										_elm_lang$html$Html$div,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$label,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$for('name-field'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Name:'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$input,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$id('name-field'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$type_('text'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$placeholder('Name'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$value(model.user.name),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onInput(_user$project$Model_Form$Name),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													},
+													{ctor: '[]'}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$label,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$for('email-field'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Email:'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$input,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$id('email-field'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$type_('text'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$value(model.user.email),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Events$onInput(_user$project$Model_Form$Email),
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	}
+																}
+															},
+															{ctor: '[]'}),
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										})),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$button,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(
+												_user$project$Model_Form$Submit('/update-user')),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('signup'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}));
 };
 var _user$project$View_UserView$show = function (model) {
 	return A2(
@@ -10796,7 +11064,14 @@ var _user$project$View_UserView$show = function (model) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('show user'),
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'show user(',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Basics$toString(model.user.id),
+								')'))),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -10958,9 +11233,34 @@ var _user$project$View_UserView$new = function (model) {
 			}));
 };
 
+var _user$project$Controller_UserController$put = function (model) {
+	return {
+		ctor: '_Tuple3',
+		_0: model,
+		_1: A2(
+			_elm_lang$core$Platform_Cmd$map,
+			_user$project$Message$RequestMsg,
+			A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Request_Message$UserReq,
+				_user$project$Request_UserData$edit(model.user))),
+		_2: _user$project$View_UserView$show
+	};
+};
 var _user$project$Controller_UserController$edit = F2(
 	function (id, model) {
-		return {ctor: '_Tuple3', _0: model, _1: _elm_lang$core$Platform_Cmd$none, _2: _user$project$View_UserView$edit};
+		return {
+			ctor: '_Tuple3',
+			_0: model,
+			_1: A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Message$RequestMsg,
+				A2(
+					_elm_lang$core$Platform_Cmd$map,
+					_user$project$Request_Message$UserReq,
+					_user$project$Request_UserData$show(id))),
+			_2: _user$project$View_UserView$edit
+		};
 	});
 var _user$project$Controller_UserController$show = F2(
 	function (id, model) {
@@ -11060,8 +11360,10 @@ var _user$project$Router$action = F2(
 				return _user$project$Controller_UserController$create(model);
 			case 'ShowUser':
 				return A2(_user$project$Controller_UserController$show, _p0._0, model);
-			default:
+			case 'EditUser':
 				return A2(_user$project$Controller_UserController$edit, _p0._0, model);
+			default:
+				return _user$project$Controller_UserController$put(model);
 		}
 	});
 var _user$project$Router$updateRender = F2(

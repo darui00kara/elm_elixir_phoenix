@@ -3,9 +3,12 @@ module Request.Helper exposing
   , ReqResult
   , get
   , post
+  , put
   , makeRequest
   , getRequest
   , postRequest
+  , putRequest
+  , deleteRequest
   )
 
 import Http exposing (Request, Error, Body, get, send)
@@ -21,11 +24,15 @@ type alias ReqResult a =
 
 get : String -> (ReqResult a -> msg) -> Decoder a -> Cmd msg
 get apiUrl translation decoder =
-  (Http.get apiUrl decoder) |> sendReq |> cmdMap translation
+  getRequest apiUrl [] decoder |> sendReq |> cmdMap translation
 
 post : String -> (ReqResult a -> msg) -> Decoder a -> Encode.Value -> Cmd msg
 post apiUrl translation decoder body =
-  (Http.post apiUrl (Http.jsonBody body) decoder) |> sendReq |> cmdMap translation
+  postRequest apiUrl [] decoder body |> sendReq |> cmdMap translation
+
+put : String -> (ReqResult a -> msg) -> Decoder a -> Encode.Value -> Cmd msg
+put apiUrl translation decoder body =
+  putRequest apiUrl [] decoder body |> sendReq |> cmdMap translation
 
 sendReq : Http.Request a -> Cmd (ReqResult a)
 sendReq =

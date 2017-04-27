@@ -11,8 +11,7 @@ import Model.Form as Form
 new : Model -> Html Msg
 new model =
   Html.map Msg.FormMsg
-  (
-    div []
+  ( div []
       [ div [] [ text "new user" ]
       , div []
         [ h2 [] [ text "Signup Form" ]
@@ -40,10 +39,36 @@ new model =
 show : Model -> Html Msg
 show model =
   div []
-    [ div [] [ text "show user" ]
+    [ div [] [ text ("show user(" ++ (toString model.user.id) ++ ")") ]
     , div [] [ text (model.user.name ++ ":" ++ model.user.email) ]
     ]
 
 edit : Model -> Html Msg
 edit model =
-  div [] [ text "edit user" ]
+  Html.map Msg.FormMsg
+  ( div []
+      [ div [] [ text "edit user" ]
+      , div []
+        [ h2 [] [ text ("user(" ++ (toString model.user.id) ++ ") Edit Form") ]
+        , Html.map Form.UserForm
+          ( div []
+            [ label [ for "name-field" ] [ text "Name:" ]
+            , input [ id "name-field"
+                    , type_ "text"
+                    , placeholder "Name"
+                    , value model.user.name
+                    , onInput Form.Name ]
+                    []
+            , label [ for "email-field" ] [ text "Email:" ]
+            , input [ id "email-field"
+                    , type_ "text"
+                    , placeholder "Email"
+                    , value model.user.email
+                    , onInput Form.Email ]
+                    []
+            ]
+          )
+        , button [ onClick (Form.Submit "/update-user") ] [ text "update!" ]
+        ]
+      ]
+  )

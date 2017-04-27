@@ -1,4 +1,4 @@
-module Controller.UserController exposing (update, new, create, show, edit)
+module Controller.UserController exposing (update, new, create, show, edit, put)
 
 import Html exposing (Html)
 
@@ -37,4 +37,14 @@ show id model =
 
 edit : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 edit id model =
-  (model, Cmd.none, View.edit)
+  ( model
+  , User.show id |> Cmd.map ReqMsg.UserReq |> Cmd.map Msg.RequestMsg
+  , View.edit
+  )
+
+put : Model -> (Model, Cmd Msg, (Model -> Html Msg))
+put model =
+  ( model
+  , User.edit model.user |> Cmd.map ReqMsg.UserReq |> Cmd.map Msg.RequestMsg
+  , View.show
+  )

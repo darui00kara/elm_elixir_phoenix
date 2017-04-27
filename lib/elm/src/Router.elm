@@ -57,6 +57,7 @@ action path model =
     Route.CreateUser  -> UserCtrl.create   model
     Route.ShowUser id -> UserCtrl.show  id model
     Route.EditUser id -> UserCtrl.edit  id model
+    Route.UpdateUser  -> UserCtrl.put      model
 
 requestRouting : ReqMsg.Msg -> Param -> (Param, Cmd Msg)
 requestRouting msg param =
