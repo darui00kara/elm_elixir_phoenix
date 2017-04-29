@@ -48,6 +48,7 @@ allLinks id =
                                  , "/signup"
                                  , "/user/" ++ (toString id) ++ "/show"
                                  , "/user/" ++ (toString id) ++ "/edit"
+                                 , "/user/" ++ (toString id) ++ "/delete"
                                  ]
             )
     ]

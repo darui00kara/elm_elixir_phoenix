@@ -18,6 +18,7 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 /lib/elm/elm-stuff/
+/lib/elm/index.html
 
 # Files matching config/*.secret.exs pattern contain sensitive
 # data and you should not commit them into version control.

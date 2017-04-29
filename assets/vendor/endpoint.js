@@ -9980,6 +9980,19 @@ var _user$project$Request_Helper$put = F4(
 					decoder,
 					body)));
 	});
+var _user$project$Request_Helper$delete = F4(
+	function (apiUrl, translation, decoder, body) {
+		return A2(
+			_user$project$Request_Helper$cmdMap,
+			translation,
+			_user$project$Request_Helper$sendReq(
+				A4(
+					_user$project$Request_Helper$deleteRequest,
+					apiUrl,
+					{ctor: '[]'},
+					decoder,
+					body)));
+	});
 
 var _user$project$Model_User$email = F2(
 	function (user, newEmail) {
@@ -10005,6 +10018,7 @@ var _user$project$Model_User$Schema = F3(
 	});
 var _user$project$Model_User$new = A3(_user$project$Model_User$Schema, 0, '', '');
 
+var _user$project$Model_UserDecoder$empty = _elm_lang$core$Json_Decode$succeed('');
 var _user$project$Model_UserDecoder$email = A2(_elm_lang$core$Json_Decode$field, 'email', _elm_lang$core$Json_Decode$string);
 var _user$project$Model_UserDecoder$name = A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string);
 var _user$project$Model_UserDecoder$id = A2(_elm_lang$core$Json_Decode$field, 'id', _elm_lang$core$Json_Decode$int);
@@ -10098,6 +10112,20 @@ var _user$project$Request_UserData$signUp = function (user) {
 		_user$project$Request_UserData$SignUp,
 		_user$project$Model_UserDecoder$user,
 		_user$project$Model_UserEncoder$createUser(user));
+};
+var _user$project$Request_UserData$Delete = function (a) {
+	return {ctor: 'Delete', _0: a};
+};
+var _user$project$Request_UserData$delete = function (user) {
+	return A4(
+		_user$project$Request_Helper$delete,
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://localhost:4000/api/users/',
+			_elm_lang$core$Basics$toString(user.id)),
+		_user$project$Request_UserData$Delete,
+		_user$project$Model_UserDecoder$empty,
+		_user$project$Model_UserEncoder$deleteUser(user));
 };
 var _user$project$Request_UserData$Edit = function (a) {
 	return {ctor: 'Edit', _0: a};
@@ -10304,6 +10332,9 @@ var _user$project$Message$UrlChange = function (a) {
 	return {ctor: 'UrlChange', _0: a};
 };
 
+var _user$project$Routing_Route$DeleteUser = function (a) {
+	return {ctor: 'DeleteUser', _0: a};
+};
 var _user$project$Routing_Route$UpdateUser = {ctor: 'UpdateUser'};
 var _user$project$Routing_Route$EditUser = function (a) {
 	return {ctor: 'EditUser', _0: a};
@@ -10425,7 +10456,20 @@ var _user$project$Routing_Route$route = _evancz$url_parser$UrlParser$oneOf(
 															_evancz$url_parser$UrlParser$map,
 															_user$project$Routing_Route$UpdateUser,
 															_evancz$url_parser$UrlParser$s('update-user')),
-														_1: {ctor: '[]'}
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_evancz$url_parser$UrlParser$map,
+																_user$project$Routing_Route$DeleteUser,
+																A2(
+																	_evancz$url_parser$UrlParser_ops['</>'],
+																	_evancz$url_parser$UrlParser$s('user'),
+																	A2(
+																		_evancz$url_parser$UrlParser_ops['</>'],
+																		_evancz$url_parser$UrlParser$int,
+																		_evancz$url_parser$UrlParser$s('delete')))),
+															_1: {ctor: '[]'}
+														}
 													}
 												}
 											}
@@ -10483,8 +10527,10 @@ var _user$project$Routing_Route$toString = function (maybePagePath) {
 			return 'show user';
 		case 'EditUser':
 			return 'edit user';
-		default:
+		case 'UpdateUser':
 			return 'update user';
+		default:
+			return 'delete user';
 	}
 };
 
@@ -10665,7 +10711,17 @@ var _user$project$View_HelperView$allLinks = function (id) {
 																			_elm_lang$core$Basics_ops['++'],
 																			_elm_lang$core$Basics$toString(id),
 																			'/edit')),
-																	_1: {ctor: '[]'}
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			'/user/',
+																			A2(
+																				_elm_lang$core$Basics_ops['++'],
+																				_elm_lang$core$Basics$toString(id),
+																				'/delete')),
+																		_1: {ctor: '[]'}
+																	}
 																}
 															}
 														}
@@ -11042,7 +11098,7 @@ var _user$project$View_UserView$edit = function (model) {
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('signup'),
+											_0: _elm_lang$html$Html$text('update!'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {ctor: '[]'}
@@ -11233,6 +11289,21 @@ var _user$project$View_UserView$new = function (model) {
 			}));
 };
 
+var _user$project$Controller_UserController$delete = F2(
+	function (id, model) {
+		return {
+			ctor: '_Tuple3',
+			_0: model,
+			_1: A2(
+				_elm_lang$core$Platform_Cmd$map,
+				_user$project$Message$RequestMsg,
+				A2(
+					_elm_lang$core$Platform_Cmd$map,
+					_user$project$Request_Message$UserReq,
+					_user$project$Request_UserData$delete(model.user))),
+			_2: _user$project$View_HelperView$render
+		};
+	});
 var _user$project$Controller_UserController$put = function (model) {
 	return {
 		ctor: '_Tuple3',
@@ -11362,8 +11433,10 @@ var _user$project$Router$action = F2(
 				return A2(_user$project$Controller_UserController$show, _p0._0, model);
 			case 'EditUser':
 				return A2(_user$project$Controller_UserController$edit, _p0._0, model);
-			default:
+			case 'UpdateUser':
 				return _user$project$Controller_UserController$put(model);
+			default:
+				return A2(_user$project$Controller_UserController$delete, _p0._0, model);
 		}
 	});
 var _user$project$Router$updateRender = F2(

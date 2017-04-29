@@ -44,20 +44,21 @@ updateRender render param =
 action : Route.PagePath -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
 action path model =
   case path of
-    Route.NotFound    -> PageCtrl.notFound model
-    Route.TopPage     -> PageCtrl.home     model
-    Route.About       -> PageCtrl.about    model
-    Route.Help        -> PageCtrl.help     model
-    Route.Contact     -> PageCtrl.contact  model
-    Route.SignIn      -> PageCtrl.signin   model
-    Route.NewPost     -> PostCtrl.new      model
-    Route.ShowPost id -> PostCtrl.show  id model
-    Route.EditPost id -> PostCtrl.edit  id model
-    Route.SignUp      -> UserCtrl.new      model
-    Route.CreateUser  -> UserCtrl.create   model
-    Route.ShowUser id -> UserCtrl.show  id model
-    Route.EditUser id -> UserCtrl.edit  id model
-    Route.UpdateUser  -> UserCtrl.put      model
+    Route.NotFound      -> PageCtrl.notFound  model
+    Route.TopPage       -> PageCtrl.home      model
+    Route.About         -> PageCtrl.about     model
+    Route.Help          -> PageCtrl.help      model
+    Route.Contact       -> PageCtrl.contact   model
+    Route.SignIn        -> PageCtrl.signin    model
+    Route.NewPost       -> PostCtrl.new       model
+    Route.ShowPost   id -> PostCtrl.show   id model
+    Route.EditPost   id -> PostCtrl.edit   id model
+    Route.SignUp        -> UserCtrl.new       model
+    Route.CreateUser    -> UserCtrl.create    model
+    Route.ShowUser   id -> UserCtrl.show   id model
+    Route.EditUser   id -> UserCtrl.edit   id model
+    Route.UpdateUser    -> UserCtrl.put       model
+    Route.DeleteUser id -> UserCtrl.delete id model
 
 requestRouting : ReqMsg.Msg -> Param -> (Param, Cmd Msg)
 requestRouting msg param =

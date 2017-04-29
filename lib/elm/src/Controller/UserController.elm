@@ -1,10 +1,11 @@
-module Controller.UserController exposing (update, new, create, show, edit, put)
+module Controller.UserController exposing (update, new, create, show, edit, put, delete)
 
 import Html exposing (Html)
 
 import Message as Msg exposing (Msg)
 import Model exposing (Model, updateUser)
 import View.UserView as View
+import View.HelperView as HelperView
 import Request.UserData as User
 import Request.Helper as Req
 import Request.Message as ReqMsg
@@ -47,4 +48,11 @@ put model =
   ( model
   , User.edit model.user |> Cmd.map ReqMsg.UserReq |> Cmd.map Msg.RequestMsg
   , View.show
+  )
+
+delete : Int -> Model -> (Model, Cmd Msg, (Model -> Html Msg))
+delete id model =
+  ( model
+  , User.delete model.user |> Cmd.map ReqMsg.UserReq |> Cmd.map Msg.RequestMsg
+  , HelperView.render
   )

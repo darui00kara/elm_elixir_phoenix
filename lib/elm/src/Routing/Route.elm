@@ -18,6 +18,7 @@ type PagePath =
   | ShowUser Int
   | EditUser Int
   | UpdateUser
+  | DeleteUser Int
 
 route : Url.Parser (PagePath -> a) a
 route =
@@ -35,6 +36,7 @@ route =
     , map ShowUser   (s "user" </> int </> s "show")
     , map EditUser   (s "user" </> int </> s "edit")
     , map UpdateUser (s "update-user")
+    , map DeleteUser (s "user" </> int </> s "delete")
     ]
 
 take : Maybe PagePath -> PagePath
@@ -56,17 +58,18 @@ isSuccess maybePagePath =
 toString : Maybe PagePath -> String
 toString maybePagePath =
   case (take maybePagePath) of
-    NotFound    -> "not found"
-    TopPage     -> "top" 
-    About       -> "about"
-    Help        -> "help"
-    Contact     -> "contact"
-    SignIn      -> "signin"
-    NewPost     -> "new post"
-    ShowPost id -> "show post"
-    EditPost id -> "edit post"
-    SignUp      -> "signup"
-    CreateUser  -> "create user"
-    ShowUser id -> "show user"
-    EditUser id -> "edit user"
-    UpdateUser  -> "update user"
+    NotFound      -> "not found"
+    TopPage       -> "top" 
+    About         -> "about"
+    Help          -> "help"
+    Contact       -> "contact"
+    SignIn        -> "signin"
+    NewPost       -> "new post"
+    ShowPost   id -> "show post"
+    EditPost   id -> "edit post"
+    SignUp        -> "signup"
+    CreateUser    -> "create user"
+    ShowUser   id -> "show user"
+    EditUser   id -> "edit user"
+    UpdateUser    -> "update user"
+    DeleteUser id -> "delete user"

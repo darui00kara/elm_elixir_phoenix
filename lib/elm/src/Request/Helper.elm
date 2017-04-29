@@ -4,6 +4,7 @@ module Request.Helper exposing
   , get
   , post
   , put
+  , delete
   , makeRequest
   , getRequest
   , postRequest
@@ -33,6 +34,10 @@ post apiUrl translation decoder body =
 put : String -> (ReqResult a -> msg) -> Decoder a -> Encode.Value -> Cmd msg
 put apiUrl translation decoder body =
   putRequest apiUrl [] decoder body |> sendReq |> cmdMap translation
+
+delete : String -> (ReqResult a -> msg) -> Decoder a -> Encode.Value -> Cmd msg
+delete apiUrl translation decoder body =
+  deleteRequest apiUrl [] decoder body |> sendReq |> cmdMap translation
 
 sendReq : Http.Request a -> Cmd (ReqResult a)
 sendReq =

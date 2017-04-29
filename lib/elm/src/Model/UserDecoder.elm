@@ -1,4 +1,4 @@
-module Model.UserDecoder exposing (user, listUsers)
+module Model.UserDecoder exposing (user, listUsers, empty)
 
 import Json.Decode as Decode exposing (Decoder, int, string)
 
@@ -23,3 +23,7 @@ user =
 listUsers : Decoder (List User.Schema)
 listUsers =
   (Decode.map3 User.Schema id name email) |> Decode.list |> Decode.field "data"
+
+empty : Decoder String
+empty =
+  (Decode.succeed "")
